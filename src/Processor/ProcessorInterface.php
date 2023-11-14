@@ -7,16 +7,16 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Processor;
+namespace PhpCollective\Infrastructure\Storage\Processor;
 
-use Phauthentic\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\FileInterface;
 
 /**
  * Processor Interface
@@ -24,8 +24,9 @@ use Phauthentic\Infrastructure\Storage\FileInterface;
 interface ProcessorInterface
 {
     /**
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface  $file File
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
      */
     public function process(FileInterface $file): FileInterface;
 }

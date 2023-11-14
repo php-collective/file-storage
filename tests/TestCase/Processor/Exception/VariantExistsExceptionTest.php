@@ -7,17 +7,17 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\Processor\Image\Exception;
+namespace PhpCollective\Test\TestCase\Processor\Image\Exception;
 
-use Phauthentic\Infrastructure\Storage\Processor\Exception\VariantExistsException;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantExistsException;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * ManipulationExistsExceptionTest

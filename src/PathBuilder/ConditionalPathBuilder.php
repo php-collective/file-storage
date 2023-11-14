@@ -7,16 +7,16 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\PathBuilder;
+namespace PhpCollective\Infrastructure\Storage\PathBuilder;
 
-use Phauthentic\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\FileInterface;
 
 /**
  * Add callbacks and path builders to check on the file which of the builders
@@ -34,12 +34,12 @@ class ConditionalPathBuilder implements PathBuilderInterface
     protected array $pathBuilders = [];
 
     /**
-     * @var \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface
+     * @var \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface
      */
     protected PathBuilderInterface $defaultPathBuilder;
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface $pathBuilder Default Path Builder
+     * @param \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface $pathBuilder Default Path Builder
      */
     public function __construct(PathBuilderInterface $pathBuilder)
     {
@@ -47,15 +47,16 @@ class ConditionalPathBuilder implements PathBuilderInterface
     }
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface $pathBuilder Path Builder
+     * @param \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface $pathBuilder Path Builder
      * @param callable $conditionCheck Condition check
+     *
      * @return $this
      */
-    public function addPathBuilder(PathBuilderInterface $pathBuilder, callable $conditionCheck): self
+    public function addPathBuilder(PathBuilderInterface $pathBuilder, callable $conditionCheck)
     {
         $this->pathBuilders[] = [
             'callable' => $conditionCheck,
-            'pathBuilder' => $pathBuilder
+            'pathBuilder' => $pathBuilder,
         ];
 
         return $this;

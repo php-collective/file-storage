@@ -4,6 +4,7 @@
 /logs
 /vendor/
 /bin
-coverage.xml
-phive*.phar
+/coverage.xml
+/composer.phar
+/phpstan.phar
 /composer.lock

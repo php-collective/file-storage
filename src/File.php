@@ -7,19 +7,19 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage;
+namespace PhpCollective\Infrastructure\Storage;
 
-use Phauthentic\Infrastructure\Storage\Exception\InvalidStreamResourceException;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
-use Phauthentic\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException;
-use Phauthentic\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface;
+use PhpCollective\Infrastructure\Storage\Exception\InvalidStreamResourceException;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
+use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException;
+use PhpCollective\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface;
 use RuntimeException;
 
 /**
@@ -122,7 +122,8 @@ class File implements FileInterface
      * @param array $variants Variants
      * @param array $metadata Meta data
      * @param resource|null $resource
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public static function create(
         string $filename,
@@ -149,7 +150,7 @@ class File implements FileInterface
         $that->metadata = $metadata;
 
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
-        $that->extension = empty($extension) ? null : (string)$extension;
+        $that->extension = !$extension ? null : (string)$extension;
 
         if ($resource !== null) {
             $that = $that->withResource($resource);
@@ -172,7 +173,8 @@ class File implements FileInterface
      * UUID of the file
      *
      * @param string $uuid UUID string
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function withUuid(string $uuid): FileInterface
     {
@@ -196,7 +198,8 @@ class File implements FileInterface
      * Same as withResource() but takes a file path
      *
      * @param string $file File
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function withFile(string $file): FileInterface
     {
@@ -207,6 +210,9 @@ class File implements FileInterface
 
     /**
      * @param mixed $resource
+     *
+     * @throws \PhpCollective\Infrastructure\Storage\Exception\InvalidStreamResourceException
+     *
      * @return void
      */
     protected function assertStreamResource($resource): void
@@ -223,7 +229,8 @@ class File implements FileInterface
      * Stream resource of the file to be stored
      *
      * @param resource $resource Stream Resource
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function withResource($resource): FileInterface
     {
@@ -240,7 +247,8 @@ class File implements FileInterface
      *
      * @param string $model Model
      * @param string|int $modelId Model ID, UUID string or integer
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function belongsToModel(string $model, $modelId): FileInterface
     {
@@ -254,7 +262,8 @@ class File implements FileInterface
      * Adds the file to a collection
      *
      * @param string $collection Collection
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function addToCollection(string $collection): FileInterface
     {
@@ -267,7 +276,8 @@ class File implements FileInterface
      * Sets the path, immutable
      *
      * @param string $path Path to the file
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function withPath(string $path): FileInterface
     {
@@ -281,6 +291,7 @@ class File implements FileInterface
      * Filename
      *
      * @param string $filename Filename
+     *
      * @return self
      */
     public function withFilename(string $filename): self
@@ -289,7 +300,7 @@ class File implements FileInterface
         $that->filename = $filename;
 
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
-        $that->extension = empty($extension) ? null : (string)$extension;
+        $that->extension = !$extension ? null : (string)$extension;
 
         return $that;
     }
@@ -344,7 +355,7 @@ class File implements FileInterface
         $i = floor(log($this->filesize, 1024));
         $round = (string)round($this->filesize / (1024 ** $i), [0, 0, 2, 2, 3][$i]);
 
-        return $round . ['B','kB','MB','GB','TB'][$i];
+        return $round . ['B', 'kB', 'MB', 'GB', 'TB'][$i];
     }
 
     /**
@@ -380,13 +391,15 @@ class File implements FileInterface
     }
 
     /**
+     * @throws \RuntimeException
+     *
      * @return string
      */
     public function path(): string
     {
         if ($this->path === null) {
             throw new RuntimeException(
-                'Path has not been set'
+                'Path has not been set',
             );
         }
 
@@ -396,8 +409,9 @@ class File implements FileInterface
     /**
      * Builds the path for this file
      *
-     * @param \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface $pathBuilder Path Builder
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     * @param \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface $pathBuilder Path Builder
+     *
+     * @return self
      */
     public function buildPath(PathBuilderInterface $pathBuilder): FileInterface
     {
@@ -410,7 +424,8 @@ class File implements FileInterface
     /**
      * @param array $metadata Meta data
      * @param bool $overwrite Overwrite whole metadata instead of assoc merging.
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function withMetadata(array $metadata, bool $overwrite = false): FileInterface
     {
@@ -470,11 +485,12 @@ class File implements FileInterface
      */
     public function hasVariants(): bool
     {
-        return !empty($this->variants);
+        return (bool)$this->variants;
     }
 
     /**
      * @param string $name Name
+     *
      * @return bool
      */
     public function hasVariant(string $name): bool
@@ -494,6 +510,9 @@ class File implements FileInterface
      * Returns a variant by name
      *
      * @param string $name Name
+     *
+     * @throws \PhpCollective\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException
+     *
      * @return array
      */
     public function variant(string $name): array
@@ -510,7 +529,8 @@ class File implements FileInterface
      *
      * @param string $name Name
      * @param array $data Data
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function withVariant(string $name, array $data): FileInterface
     {
@@ -565,14 +585,15 @@ class File implements FileInterface
      *
      * @param array $variants Variants
      * @param bool $merge Merge Variants, default is true
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return self
      */
     public function withVariants(array $variants, bool $merge = true): FileInterface
     {
         $that = clone $this;
         $that->variants = array_merge_recursive(
             $merge ? $that->variants : [],
-            $variants
+            $variants,
         );
 
         return $that;
@@ -625,7 +646,7 @@ class File implements FileInterface
             'readableSize' => $this->readableSize(),
             'variants' => $this->variants,
             'metadata' => $this->metadata,
-            'url' => $this->url
+            'url' => $this->url,
         ];
     }
 

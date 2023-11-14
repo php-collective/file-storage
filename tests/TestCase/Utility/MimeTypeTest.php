@@ -7,17 +7,17 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\Utility;
+namespace PhpCollective\Test\TestCase\Utility;
 
-use Phauthentic\Infrastructure\Storage\Utility\MimeType;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\Utility\MimeType;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * MimeTypeTest
@@ -31,24 +31,24 @@ class MimeTypeTest extends TestCase
     {
         $this->assertEquals(
             'image/jpeg',
-            MimeType::byExtension('jpg')
+            MimeType::byExtension('jpg'),
         );
 
         $this->assertEquals(
             'image/jpeg',
-            MimeType::byFilename('titus.jpg')
+            MimeType::byFilename('titus.jpg'),
         );
 
         MimeType::addMimeTypeToMap('funky', 'funky/type');
         $this->assertEquals(
             'funky/type',
-            MimeType::byExtension('funky')
+            MimeType::byExtension('funky'),
         );
 
         $content = file_get_contents($this->getFixtureFile('titus.jpg'));
         $this->assertEquals(
             'image/jpeg',
-            MimeType::byContent($content)
+            MimeType::byContent($content),
         );
 
         $result = MimeType::getExtensionToMimeTypeMap();

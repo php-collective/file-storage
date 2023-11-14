@@ -7,19 +7,19 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\Processor;
+namespace PhpCollective\Test\TestCase\Processor;
 
-use Phauthentic\Infrastructure\Storage\FileFactory;
-use Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface;
-use Phauthentic\Infrastructure\Storage\Processor\StackProcessor;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\FileFactory;
+use PhpCollective\Infrastructure\Storage\Processor\ProcessorInterface;
+use PhpCollective\Infrastructure\Storage\Processor\StackProcessor;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * StackProcessorTest
@@ -34,7 +34,7 @@ class StackProcessorTest extends TestCase
         $fileOnDisk = $this->getFixtureFile('titus.jpg');
         $file = FileFactory::fromDisk($fileOnDisk, 'Local');
 
-        /** @var \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor1 */
+        /** @var \PhpCollective\Infrastructure\Storage\Processor\ProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor1 */
         $processor1 = $this->getMockBuilder(ProcessorInterface::class)
             ->getMock();
 
@@ -43,7 +43,7 @@ class StackProcessorTest extends TestCase
             ->with($file)
             ->willReturn($file);
 
-        /** @var \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor2 */
+        /** @var \PhpCollective\Infrastructure\Storage\Processor\ProcessorInterface|\PHPUnit\Framework\MockObject\MockObject $processor2 */
         $processor2 = $this->getMockBuilder(ProcessorInterface::class)
             ->getMock();
 
@@ -54,7 +54,7 @@ class StackProcessorTest extends TestCase
 
         $processor = new StackProcessor([
             $processor1,
-            $processor2
+            $processor2,
         ]);
 
         $file2 = $processor->process($file);

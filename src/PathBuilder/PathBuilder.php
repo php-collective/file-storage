@@ -7,22 +7,22 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\PathBuilder;
+namespace PhpCollective\Infrastructure\Storage\PathBuilder;
 
 use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
-use Phauthentic\Infrastructure\Storage\FileInterface;
-use Phauthentic\Infrastructure\Storage\Utility\FilenameSanitizer;
-use Phauthentic\Infrastructure\Storage\Utility\FilenameSanitizerInterface;
-use Phauthentic\Infrastructure\Storage\Utility\PathInfo;
+use PhpCollective\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizer;
+use PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface;
+use PhpCollective\Infrastructure\Storage\Utility\PathInfo;
 
 /**
  * A path builder is an utility class that generates a path and filename for a
@@ -51,8 +51,8 @@ class PathBuilder implements PathBuilderInterface
             'day' => 'd',
             'hour' => 'H',
             'minute' => 'i',
-            'custom' => 'Y-m-d'
-        ]
+            'custom' => 'Y-m-d',
+        ],
     ];
 
     /**
@@ -61,7 +61,7 @@ class PathBuilder implements PathBuilderInterface
     protected array $config = [];
 
     /**
-     * @var \Phauthentic\Infrastructure\Storage\Utility\FilenameSanitizerInterface
+     * @var \PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface
      */
     protected FilenameSanitizerInterface $filenameSanitizer;
 
@@ -80,10 +80,11 @@ class PathBuilder implements PathBuilderInterface
     }
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\Utility\FilenameSanitizerInterface $sanitizer
-     * @return self
+     * @param \PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface $sanitizer
+     *
+     * @return $this
      */
-    public function setFilenameSanitizer(FilenameSanitizerInterface $sanitizer): self
+    public function setFilenameSanitizer(FilenameSanitizerInterface $sanitizer)
     {
         $this->filenameSanitizer = $sanitizer;
 
@@ -92,9 +93,10 @@ class PathBuilder implements PathBuilderInterface
 
     /**
      * @param string $template Template string
-     * @return self
+     *
+     * @return $this
      */
-    public function setPathTemplate(string $template): self
+    public function setPathTemplate(string $template)
     {
         $this->config['pathTemplate'] = $template;
 
@@ -103,9 +105,10 @@ class PathBuilder implements PathBuilderInterface
 
     /**
      * @param string $template Template string
-     * @return self
+     *
+     * @return $this
      */
-    public function setVariantPathTemplate(string $template): self
+    public function setVariantPathTemplate(string $template)
     {
         $this->config['variantPathTemplate'] = $template;
 
@@ -114,9 +117,10 @@ class PathBuilder implements PathBuilderInterface
 
     /**
      * @param string $format Date format
-     * @return self
+     *
+     * @return $this
      */
-    public function setCustomDateFormat(string $format): self
+    public function setCustomDateFormat(string $format)
     {
         $this->config['dateFormat']['custom'] = $format;
 
@@ -126,8 +130,9 @@ class PathBuilder implements PathBuilderInterface
     /**
      * Builds the path under which the data gets stored in the storage adapter.
      *
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
      * @param array $options Options
+     *
      * @return string
      */
     public function path(FileInterface $file, array $options = []): string
@@ -144,8 +149,9 @@ class PathBuilder implements PathBuilderInterface
     }
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
      * @param array $options Options
+     *
      * @return string
      */
     protected function filename(FileInterface $file, array $options = []): string
@@ -174,7 +180,9 @@ class PathBuilder implements PathBuilderInterface
      * @param string $string Input string
      * @param int $level Depth of the path to generate.
      * @param string $method Hash method, crc32 or sha1.
+     *
      * @throws \InvalidArgumentException
+     *
      * @return string
      */
     protected function randomPath($string, $level = 3, $method = 'sha1'): string
@@ -189,7 +197,7 @@ class PathBuilder implements PathBuilderInterface
 
         throw new InvalidArgumentException(sprintf(
             'BasepathBuilder::randomPath() invalid hash `%s` method provided!',
-            $method
+            $method,
         ));
     }
 
@@ -200,6 +208,7 @@ class PathBuilder implements PathBuilderInterface
      *
      * @param string $string Input string
      * @param int $level Depth of the path to generate.
+     *
      * @return string
      */
     protected function randomPathSha1(string $string, int $level): string
@@ -276,6 +285,7 @@ class PathBuilder implements PathBuilderInterface
      * @param array $placeholders Assoc array of placeholder to value
      * @param string $template Template string
      * @param string $separator Directory Separator
+     *
      * @return string
      */
     protected function parseTemplate(
@@ -286,7 +296,7 @@ class PathBuilder implements PathBuilderInterface
         $result = str_replace(
             array_keys($placeholders),
             array_values($placeholders),
-            $template
+            $template,
         );
 
         // Remove double or more separators caused by empty template vars

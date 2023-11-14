@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage;
+namespace PhpCollective\Infrastructure\Storage;
 
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -28,7 +28,8 @@ interface FileFactoryInterface
      *
      * @param \Psr\Http\Message\UploadedFileInterface $uploadedFile PSR Uploaded File
      * @param string $storage Storage to use
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
      */
     public static function fromUploadedFile(
         UploadedFileInterface $uploadedFile,
@@ -40,7 +41,8 @@ interface FileFactoryInterface
      *
      * @param string $path Path to local file
      * @param string $storage Storage
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
      */
     public static function fromDisk(string $path, string $storage): FileInterface;
 }

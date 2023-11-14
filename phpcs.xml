@@ -1,14 +1,19 @@
 <?xml version="1.0"?>
-<ruleset name="Phauthentic">
+<ruleset name="file-storage">
+    <config name="installed_paths" value="../../php-collective/code-sniffer"/>
+
     <arg name="tab-width" value="4"/>
-    <rule ref="PSR12">
-        <exclude name="Generic.Files.LineLength.TooLong"/>
-        <exclude name="PSR2.Classes.PropertyDeclaration"/>
-        <exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
-        <!-- Use this if you want tabs over spaces -->
-        <!-- <exclude name="Generic.WhiteSpace.DisallowTabIndent"/> -->
+
+    <file>src/</file>
+    <file>tests/</file>
+
+    <rule ref="PhpCollective"/>
+
+    <rule ref="PhpCollective.PHP.DeclareStrictTypes">
+        <properties>
+            <property name="declareOnFirstLine" value="yes"/>
+            <property name="spacesCountAroundEqualsSign" value="1"/>
+        </properties>
     </rule>
-    <!-- Use this if you want tabs over spaces -->
-    <!-- <rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>-->
-    <file>./src</file>
+
 </ruleset>

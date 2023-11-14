@@ -7,17 +7,17 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\Utility;
+namespace PhpCollective\Test\TestCase\Utility;
 
-use Phauthentic\Infrastructure\Storage\Utility\NoopFilenameSanitizer;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\Utility\NoopFilenameSanitizer;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * NoopFilenameSanitizerTest

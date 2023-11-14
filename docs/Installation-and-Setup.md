@@ -5,7 +5,7 @@
 Install it via [Composer](https://getcomposer.org/)
 
 ```sh
-composer require phauthentic/file-storage
+composer require php-collective/file-storage
 ```
 
 If you want to manually install it we assume you know what you're doing by not using Composer.
@@ -15,7 +15,7 @@ If you want to manually install it we assume you know what you're doing by not u
 To use the image processing feature you'll need to add this repository as well:
 
 ```sh
-composer require phauthentic/file-storage-image-processor
+composer require php-collective/file-storage-image-processor
 ```
 
 ## Development Tools

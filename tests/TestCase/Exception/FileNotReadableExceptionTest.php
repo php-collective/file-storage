@@ -7,17 +7,17 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\Exception;
+namespace PhpCollective\Test\TestCase\Exception;
 
-use Phauthentic\Infrastructure\Storage\Exception\FileNotReadableException;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\Exception\FileNotReadableException;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * FileNotReadableExceptionTest
@@ -32,7 +32,7 @@ class FileNotReadableExceptionTest extends TestCase
         $exception = FileNotReadableException::filename('foobar.jpg');
         $this->assertEquals(
             'File foobar.jpg is not readable',
-            $exception->getMessage()
+            $exception->getMessage(),
         );
     }
 }

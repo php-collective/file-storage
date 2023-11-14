@@ -7,21 +7,21 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\PathBuilder;
+namespace PhpCollective\Test\TestCase\PathBuilder;
 
-use Phauthentic\Infrastructure\Storage\FileFactory;
-use Phauthentic\Infrastructure\Storage\FileInterface;
-use Phauthentic\Infrastructure\Storage\PathBuilder\ConditionalPathBuilder;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilder;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\FileFactory;
+use PhpCollective\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\PathBuilder\ConditionalPathBuilder;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * ConditionalPathBuilderTest
@@ -40,14 +40,14 @@ class ConditionalPathBuilderTest extends TestCase
         $file2 = FileFactory::fromDisk($fixtureFile, 'local')
             ->belongsToModel('Photos', '1');
 
-        /** @var \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface|\PHPUnit\Framework\MockObject\MockObject $defaultBuilder */
+        /** @var \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface|\PHPUnit\Framework\MockObject\MockObject $defaultBuilder */
         $defaultBuilder = $this->getMockBuilder(PathBuilderInterface::class)
             ->getMock();
         $defaultBuilder->expects($this->once())
             ->method('path')
             ->willReturn('');
 
-        /** @var \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface|\PHPUnit\Framework\MockObject\MockObject $otherPathBuilder */
+        /** @var \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface|\PHPUnit\Framework\MockObject\MockObject $otherPathBuilder */
         $otherPathBuilder = $this->getMockBuilder(PathBuilderInterface::class)
             ->getMock();
         $otherPathBuilder->expects($this->once())
@@ -76,8 +76,8 @@ class ConditionalPathBuilderTest extends TestCase
 
         $file->withVariant('resize', [
             'operations' => [
-                'resize' => [100, 100]
-            ]
+                'resize' => [100, 100],
+            ],
         ]);
 
         $defaultBuilder = new PathBuilder();

@@ -42,6 +42,6 @@ We think there is a need to explain why we have picked the dependencies we have,
 
 The dependencies have been selected based on the code quality and amount of further dependencies they would introduce.
 
-There are two dependencies, one of them `phauthentic/file-storage-factories` is just to abstract the real dependency `flysystem\flysystem`.
+There are two dependencies, one of them `php-collective/file-storage-factories` is just to abstract the real dependency `flysystem\flysystem`.
 
 Flysystem is the underlying storage abstraction library that provides the functionality to write to different storage backends.

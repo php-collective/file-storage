@@ -7,8 +7,8 @@ Consider this service "low level" access to the storage backends. It gives you d
 ### Constructing the service
 
 ```php
-use Phauthentic\Infrastructure\Storage\StorageAdapterFactory;
-use Phauthentic\Infrastructure\Storage\StorageService;
+use PhpCollective\Infrastructure\Storage\StorageAdapterFactory;
+use PhpCollective\Infrastructure\Storage\StorageService;
 
 $service = new StorageService(
     new StorageAdapterFactory()

@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage;
+namespace PhpCollective\Infrastructure\Storage;
 
 use RuntimeException;
 
@@ -26,20 +26,21 @@ use RuntimeException;
  * @param string $mode
  * @param bool $useIncludePath
  * @param mixed $context
+ * @throws \RuntimeException
  * @return resource
  */
-function fopen(string $filename, string $mode, bool $useIncludePath = true, $context = null)
+function openFile(string $filename, string $mode, bool $useIncludePath = true, $context = null)
 {
     if (is_resource($context)) {
-        $result = \fopen($filename, $mode, $useIncludePath, $context);
+        $result = fopen($filename, $mode, $useIncludePath, $context);
     } else {
-        $result = \fopen($filename, $mode, $useIncludePath);
+        $result = fopen($filename, $mode, $useIncludePath);
     }
 
     if ($result === false) {
         throw new RuntimeException(sprintf(
             'Failed to open resource `%s`',
-            $filename
+            $filename,
         ));
     }
 

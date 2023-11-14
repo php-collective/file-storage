@@ -7,20 +7,20 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\UrlBuilder;
+namespace PhpCollective\Test\TestCase\UrlBuilder;
 
-use Phauthentic\Infrastructure\Storage\FileFactory;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilder;
-use Phauthentic\Infrastructure\Storage\Processor\Image\ImageVariant;
-use Phauthentic\Infrastructure\Storage\UrlBuilder\LocalUrlBuilder;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\FileFactory;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
+use PhpCollective\Infrastructure\Storage\Processor\Image\ImageVariant;
+use PhpCollective\Infrastructure\Storage\UrlBuilder\LocalUrlBuilder;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * Local Url BuilderTest
@@ -49,7 +49,7 @@ class LocalUrlBuilderTest extends TestCase
             'crop' => ImageVariant::create('crop')
                 ->withUrl('User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/foobar.crop.jpg')
                 ->crop(100, 100)
-                ->toArray()
+                ->toArray(),
         ]);
 
         $result = $urlBuilder->urlForVariant($file, 'crop');

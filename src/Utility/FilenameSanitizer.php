@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Utility;
+namespace PhpCollective\Infrastructure\Storage\Utility;
 
 /**
  * Filename Sanitizer
@@ -91,6 +91,7 @@ class FilenameSanitizer implements FilenameSanitizerInterface
     /**
      * @param string $filename Filename
      * @param string $replacement Replacement character
+     *
      * @return string
      */
     protected function replaceCharacters(string $filename, string $replacement = '-'): string
@@ -108,6 +109,7 @@ class FilenameSanitizer implements FilenameSanitizerInterface
 
     /**
      * @param string $string String
+     *
      * @return string
      */
     public function sanitize(string $string): string
@@ -138,8 +140,10 @@ class FilenameSanitizer implements FilenameSanitizerInterface
      *
      * @link http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
      * @link http://serverfault.com/a/9548/44086
+     *
      * @param string $filename Filename
      * @param int $maxLength Max length, 255 by default
+     *
      * @return string
      */
     protected function enforceMaxLength(string $filename, int $maxLength = 255): string
@@ -151,7 +155,7 @@ class FilenameSanitizer implements FilenameSanitizerInterface
             pathinfo($filename, PATHINFO_FILENAME),
             0,
             $length,
-            mb_detect_encoding($filename)
+            mb_detect_encoding($filename) ?: null,
         );
 
         return $filename . ($ext ? '.' . $ext : '');
@@ -160,7 +164,7 @@ class FilenameSanitizer implements FilenameSanitizerInterface
     /**
      * Beautifies a filename to make it better to read
      *
-     * "file   name.zip" becomes "file-name.zip"
+     * "file name.zip" becomes "file-name.zip"
      * "file___name.zip" becomes "file-name.zip"
      * "file---name.zip" becomes "file-name.zip"
      * "file--.--.-.--name.zip" becomes "file.name.zip"
@@ -168,7 +172,9 @@ class FilenameSanitizer implements FilenameSanitizerInterface
      * ".file-name.-" becomes "file-name"
      *
      * @link https://stackoverflow.com/questions/2021624/string-sanitizer-for-filename
+     *
      * @param string $filename Filename
+     *
      * @return string
      */
     public function beautify(string $filename): string
@@ -180,18 +186,18 @@ class FilenameSanitizer implements FilenameSanitizerInterface
             // "file___name.zip" becomes "file-name.zip"
             '/_+/',
             // "file---name.zip" becomes "file-name.zip"
-            '/-+/'
+            '/-+/',
         ], '-', $filename);
 
         $filename = (string)preg_replace([
             // "file--.--.-.--name.zip" becomes "file.name.zip"
             '/-*\.-*/',
             // "file...name..zip" becomes "file.name.zip"
-            '/\.{2,}/'
+            '/\.{2,}/',
         ], '.', $filename);
 
         // lowercase for windows/unix interoperability http://support.microsoft.com/kb/100625
-        $filename = mb_strtolower($filename, mb_detect_encoding($filename));
+        $filename = mb_strtolower($filename, mb_detect_encoding($filename) ?: null);
 
         // ".file-name.-" becomes "file-name"
         $filename = trim($filename, '.-');
@@ -201,6 +207,7 @@ class FilenameSanitizer implements FilenameSanitizerInterface
 
     /**
      * @param string $string String
+     *
      * @return string
      */
     protected function removeAllNonAlphaNumerical(string $string): string
@@ -218,6 +225,7 @@ class FilenameSanitizer implements FilenameSanitizerInterface
     /**
      * @param string $string String
      * @param string $encoding Encoding
+     *
      * @return string
      */
     protected function stringToLowerCase(

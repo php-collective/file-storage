@@ -7,16 +7,16 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\UrlBuilder;
+namespace PhpCollective\Infrastructure\Storage\UrlBuilder;
 
-use Phauthentic\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\FileInterface;
 
 /**
  * Local URL Builder

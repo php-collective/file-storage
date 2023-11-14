@@ -13,12 +13,12 @@
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Utility;
+namespace PhpCollective\Infrastructure\Storage\Utility;
 
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
-use function \Phauthentic\Infrastructure\Storage\fopen;
+use function \PhpCollective\Infrastructure\Storage\openFile;
 
 /**
  * Converts Guzzle streams into PHP stream resources.
@@ -56,7 +56,7 @@ class StreamWrapper
             );
         }
 
-        $result = fopen('guzzle://stream', $mode, false, self::createStreamContext($stream));
+        $result = openFile('guzzle://stream', $mode, false, self::createStreamContext($stream));
 
         return $result;
     }

@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage;
+namespace PhpCollective\Infrastructure\Storage;
 
 use IteratorAggregate;
 use League\Flysystem\AdapterInterface;
@@ -27,24 +27,28 @@ interface AdapterCollectionInterface extends IteratorAggregate
     /**
      * @param string $name Name
      * @param \League\Flysystem\AdapterInterface $adapter Adapter
+     *
      * @return void
      */
     public function add($name, AdapterInterface $adapter);
 
     /**
      * @param string $name Name
+     *
      * @return void
      */
     public function remove(string $name): void;
 
     /**
      * @param string $name Name
+     *
      * @return bool
      */
     public function has(string $name): bool;
 
     /**
      * @param string $name
+     *
      * @return \League\Flysystem\AdapterInterface
      */
     public function get(string $name): AdapterInterface;

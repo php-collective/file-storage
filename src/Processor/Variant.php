@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Processor;
+namespace PhpCollective\Infrastructure\Storage\Processor;
 
 /**
  * Manipulation
@@ -22,8 +22,11 @@ namespace Phauthentic\Infrastructure\Storage\Processor;
 class Variant implements VariantInterface
 {
     protected string $name = '';
+
     protected array $operations = [];
+
     protected string $path = '';
+
     protected string $url = '';
 
     /**
@@ -65,6 +68,7 @@ class Variant implements VariantInterface
 
     /**
      * @param string $url Path
+     *
      * @return self
      */
     public function withUrl(string $url): self
@@ -77,6 +81,7 @@ class Variant implements VariantInterface
 
     /**
      * @param string $path Path
+     *
      * @return self
      */
     public function withPath(string $path): self

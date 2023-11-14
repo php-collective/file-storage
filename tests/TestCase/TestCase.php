@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -7,14 +8,12 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
-declare(strict_types=1);
-
-namespace Phauthentic\Test\TestCase;
+namespace PhpCollective\Test\TestCase;
 
 use PHPUnit\Framework\TestCase as PhpUnitTestCase;
 
@@ -45,6 +44,9 @@ class TestCase extends PhpUnitTestCase
         $this->fixtureRoot = __DIR__ . $ds . '..' . $ds . 'Fixtures' . $ds;
     }
 
+    /**
+     * @return void
+     */
     public function tearDown(): void
     {
         $this->cleanUpFiles();
@@ -65,6 +67,7 @@ class TestCase extends PhpUnitTestCase
 
     /**
      * @param string $path Path
+     *
      * @return string
      */
     public function getFixtureFile($path): string
@@ -76,6 +79,7 @@ class TestCase extends PhpUnitTestCase
 
     /**
      * @param string $path Path
+     *
      * @return void
      */
     protected function rrmdir(string $path): void
@@ -83,7 +87,7 @@ class TestCase extends PhpUnitTestCase
         if (is_dir($path)) {
             $objects = scandir($path);
             foreach ($objects as $object) {
-                if ($object !== "." && $object !== "..") {
+                if ($object !== '.' && $object !== '..') {
                     if (is_dir($path . DIRECTORY_SEPARATOR . $object) && !is_link($path . '/' . $object)) {
                         $this->rrmdir($path . DIRECTORY_SEPARATOR . $object);
                     } else {
@@ -95,7 +99,12 @@ class TestCase extends PhpUnitTestCase
         }
     }
 
-    public function sanitizeSeparator($string)
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    public function sanitizeSeparator(string $string): string
     {
         if (DIRECTORY_SEPARATOR === '/') {
             return str_replace('\\', '/', $string);

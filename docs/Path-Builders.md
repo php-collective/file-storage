@@ -17,7 +17,7 @@ $builder = new PathBuilder([
  * **randomPath**: 'sha1'
  * **sanitizeFilename**: true
  * **beautifyFilename**: false
- * **filenameSanitizer**: null|\Phauthentic\Infrastructure\Storage\Utility\FilenameSanitizerInterface
+ * **filenameSanitizer**: null|\PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface
  * **pathTemplate**: '{model}{ds}{randomPath}{ds}{id}'
  * **variantPathTemplate**: '{filename}.{variant}.{extension}'
  * **dateFormat**: Array of [DateTimeInterface::format()](https://www.php.net/manual/en/datetime.format.php) compatible values
@@ -61,7 +61,7 @@ The following placeholders are only valid when used in a path for a manipulated 
 
 ### Filename sanitization
 
-This path builder provides a `setFilenameSanitizer()` method that takes an object implementing `Phauthentic\Infrastructure\Storage\Utility\FilenameSanitizerInterface`.
+This path builder provides a `setFilenameSanitizer()` method that takes an object implementing `PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface`.
 
 This is an alternative way to provide a sanitizer besides passing it through the configuration array.
 
@@ -74,9 +74,9 @@ This allows you to use different instances with a different configuration or imp
 The example below will use the "other" path builder instance if the model attached to the file called "user". If not it will fall back to the default builder.
 
 ```php
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilder;
-use Phauthentic\Infrastructure\Storage\PathBuilder\ConditionalPathBuilder;
-use Phauthentic\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
+use PhpCollective\Infrastructure\Storage\PathBuilder\ConditionalPathBuilder;
+use PhpCollective\Infrastructure\Storage\FileInterface;
 
 $default = new PathBuilder();
 $other = new PathBuilder([
@@ -94,8 +94,8 @@ $builder->addPathBuilder($other, function(FileInterface $file, ?string $manipula
 To implement your own path builder implement the [PathBuilderInterface](../src/PathBuilder/PathBuilderInterface.php).
 
 ```php
-use Phauthentic\Infrastructure\Storage\FileInterface;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
+use PhpCollective\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
 
 class MyPathBuilder implements PathBuilderInterface
 {

@@ -7,30 +7,38 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Utility;
+namespace PhpCollective\Infrastructure\Storage\Utility;
 
 /**
  * OO version of pathinfo()
  */
 class PathInfo
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $dirname;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $basename;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     protected $extension;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $filename;
 
     /**
@@ -55,7 +63,7 @@ class PathInfo
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function dirname(): ?string
     {

@@ -9,17 +9,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.4', '8.0', '8.1']
+        php-version: ['8.1', '8.3']
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+    - uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.1'
         extensions: mbstring, json, fileinfo
         tools: pecl
         coverage: pcov
@@ -37,14 +35,14 @@ jobs:
 
     - name: Run PHPUnit
       run: |
-        if [[ ${{ matrix.php-version }} == '7.4' ]]; then
+        if [[ ${{ matrix.php-version }} == '8.1' ]]; then
           bin/phpunit --coverage-clover=coverage.xml
         else
           bin/phpunit
         fi
 
     - name: Code Coverage Report
-      if: success() && matrix.php-version == '7.4'
+      if: success() && matrix.php-version == '8.1'
       uses: codecov/codecov-action@v1
 
   cs-stan:
@@ -52,14 +50,12 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
+    - uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.1'
         extensions: mbstring, json, fileinfo
         coverage: none
         tools: pecl
@@ -71,7 +67,7 @@ jobs:
       run: php config/composer_phive.php
 
     - name: Run phpcs
-      run: bin/phpcs --version && bin/phpcs --report=checkstyle --standard=phpcs.xml src/ tests/
+      run: bin/phpcs --version && bin/phpcs --report=checkstyle
 
     - name: Run phpstan
-      run: bin/phpstan -V && bin/phpstan analyse src -l 5 --error-format=github
+      run: bin/phpstan -V && bin/phpstan analyse --error-format=github

@@ -7,17 +7,17 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\Processor;
+namespace PhpCollective\Test\TestCase\Processor;
 
-use Phauthentic\Infrastructure\Storage\Processor\Variant;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\Processor\Variant;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * VariantTest
@@ -44,7 +44,7 @@ class VariantTest extends TestCase
             'operations' => [],
             'path' => '/',
             'url' => '',
-            'name' => 'test'
+            'name' => 'test',
         ];
         $result = $variant->toArray();
 

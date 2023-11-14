@@ -7,16 +7,16 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Processor;
+namespace PhpCollective\Infrastructure\Storage\Processor;
 
-use Phauthentic\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\FileInterface;
 
 /**
  * The stack processor takes a list of other processors and processes them in
@@ -27,7 +27,7 @@ class StackProcessor implements ProcessorInterface
     protected array $processors = [];
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface[] $processors
+     * @param array<\PhpCollective\Infrastructure\Storage\Processor\ProcessorInterface> $processors
      */
     public function __construct(array $processors)
     {
@@ -37,7 +37,9 @@ class StackProcessor implements ProcessorInterface
     }
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface $processor
+     * @param \PhpCollective\Infrastructure\Storage\Processor\ProcessorInterface $processor
+     *
+     * @return void
      */
     public function add(ProcessorInterface $processor): void
     {
@@ -45,7 +47,7 @@ class StackProcessor implements ProcessorInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function process(FileInterface $file): FileInterface
     {

@@ -1,5 +1,5 @@
 {
-    "name": "phauthentic/file-storage",
+    "name": "php-collective/file-storage",
     "description": "File Storage",
     "keywords": ["storage", "files", "file storage", "file system", "persistence", "media", "image processing", "agnostic"],
     "type": "library",
@@ -8,6 +8,10 @@
         {
             "name": "Florian Krämer",
             "role": "Maintainer"
+        },
+        {
+            "name": "Mark Scherer",
+            "role": "Maintainer"
         }
     ],
     "require": {
@@ -15,25 +19,28 @@
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "phauthentic/file-storage-factories": "^1.0",
+        "php-collective/file-storage-factories": "^1.0",
         "psr/http-message": "^1.0"
     },
     "require-dev": {
-        "phauthentic/file-storage-image-processor": "^1.0"
+        "phpunit/phpunit": "^10.3",
+        "php-collective/code-sniffer": "^0.2.1",
+        "php-collective/file-storage-image-processor": "^1.0"
     },
     "suggest": {
-        "phauthentic/file-storage-image-processor": "For image processing"
+        "php-collective/file-storage-image-processor": "For image processing"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "bin-dir": "bin",
-        "process-timeout": 0,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "autoload": {
         "psr-4": {
-            "Phauthentic\\Infrastructure\\Storage\\": "src/"
+            "PhpCollective\\Infrastructure\\Storage\\": "src/"
         },
         "files": [
             "src/functions.php"
@@ -41,7 +48,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Phauthentic\\Test\\": "tests/"
+            "PhpCollective\\Test\\": "tests/"
         }
     },
     "scripts": {
@@ -57,17 +64,14 @@
         "test-coverage-html": [
             "phpunit --coverage-html tmp/coverage/"
         ],
-        "cscheck": [
-            "phpcs src/ tests/ --standard=phpcs.xml -s"
+        "cs-check": [
+            "phpcs -s"
         ],
-        "csfix": [
-            "phpcbf src/ tests/ --standard=phpcs.xml"
+        "cs-fix": [
+            "phpcbf"
         ],
-        "analyze": [
-            "phpstan analyse src/"
-        ],
-        "phive": [
-            "php config/composer_phive.php"
+        "stan": [
+            "phpstan analyze src/"
         ]
     }
 }

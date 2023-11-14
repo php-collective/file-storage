@@ -7,17 +7,17 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase\Utility;
+namespace PhpCollective\Test\TestCase\Utility;
 
-use Phauthentic\Infrastructure\Storage\Utility\FilenameSanitizer;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizer;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * FilenameSanitizerTest
@@ -41,7 +41,7 @@ class FilenameSanitizerTest extends TestCase
 
         // Lowercase all chars
         $sanitizer = new FilenameSanitizer([
-            'lowercase' => true
+            'lowercase' => true,
         ]);
 
         $result = $sanitizer->sanitize('MAKE-ME-LOWER-CASE');
@@ -49,7 +49,7 @@ class FilenameSanitizerTest extends TestCase
 
         // Remove all non alpha numeric chars
         $sanitizer = new FilenameSanitizer([
-            'removeAllNonAlphaNumerical' => true
+            'removeAllNonAlphaNumerical' => true,
         ]);
 
         $result = $sanitizer->sanitize('Remove + this!.txt');
@@ -58,7 +58,7 @@ class FilenameSanitizerTest extends TestCase
         // Max length enforcement
         $sanitizer = new FilenameSanitizer([
             'enforceMaxLength' => true,
-            'maxLength' => 10
+            'maxLength' => 10,
         ]);
 
         $result = $sanitizer->sanitize('this-is-longer-than-tne-chars.txt');

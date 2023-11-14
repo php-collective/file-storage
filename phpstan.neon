@@ -1,6 +1,8 @@
 parameters:
-    level: 6
-    paths:
-        - src/
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+	level: 6
+	paths:
+		- src/
+	checkMissingIterableValueType: false
+	checkGenericClassInNonGenericObjectType: false
+	ignoreErrors:
+		-  '#Offset \''dirname\'' does not exist on array.+#'

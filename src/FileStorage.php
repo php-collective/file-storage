@@ -7,22 +7,22 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage;
+namespace PhpCollective\Infrastructure\Storage;
 
 use InvalidArgumentException;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
-use Phauthentic\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException;
-use Phauthentic\Infrastructure\Storage\Processor\Exception\VariantException;
-use Phauthentic\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
+use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException;
+use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantException;
+use PhpCollective\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface;
 use RuntimeException;
 
 /**
@@ -41,26 +41,26 @@ class FileStorage implements FileStorageInterface
     ];
 
     /**
-     * @var \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface|null
+     * @var \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface|null
      */
     protected ?PathBuilderInterface $pathBuilder;
 
     /**
-     * @var \Phauthentic\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface|null
+     * @var \PhpCollective\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface|null
      */
     protected ?UrlBuilderInterface $urlBuilder;
 
     /**
-     * @var \Phauthentic\Infrastructure\Storage\StorageServiceInterface
+     * @var \PhpCollective\Infrastructure\Storage\StorageServiceInterface
      */
     protected StorageServiceInterface $storageService;
 
     /**
      * Constructor
      *
-     * @param \Phauthentic\Infrastructure\Storage\StorageServiceInterface $storageService Storage Service
-     * @param \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilderInterface|null $pathBuilder Path Builder
-     * @param \Phauthentic\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface|null $urlBuilder Path Builder
+     * @param \PhpCollective\Infrastructure\Storage\StorageServiceInterface $storageService Storage Service
+     * @param \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface|null $pathBuilder Path Builder
+     * @param \PhpCollective\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface|null $urlBuilder Path Builder
      */
     public function __construct(
         StorageServiceInterface $storageService,
@@ -74,6 +74,9 @@ class FileStorage implements FileStorageInterface
 
     /**
      * @param string $name Name of the callback
+     *
+     * @throws \InvalidArgumentException
+     *
      * @return void
      */
     protected function checkCallbackName(string $name): void
@@ -82,7 +85,7 @@ class FileStorage implements FileStorageInterface
             throw new InvalidArgumentException(sprintf(
                 'Invalid callback `%s`, only %s are valid',
                 $name,
-                implode(', ', array_keys($this->callbacks))
+                implode(', ', array_keys($this->callbacks)),
             ));
         }
     }
@@ -92,6 +95,7 @@ class FileStorage implements FileStorageInterface
      *
      * @param string $name
      * @param callable $callable Callable
+     *
      * @return void
      */
     public function addCallback($name, callable $callable): void
@@ -102,8 +106,9 @@ class FileStorage implements FileStorageInterface
 
     /**
      * @param string $name Name of the callback
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
      */
     public function runCallbacks(string $name, FileInterface $file): FileInterface
     {
@@ -118,6 +123,7 @@ class FileStorage implements FileStorageInterface
 
     /**
      * @inheritDoc
+     *
      * @throws \RuntimeException
      */
     public function store(FileInterface $file, ?Config $config = null): FileInterface
@@ -168,6 +174,9 @@ class FileStorage implements FileStorageInterface
 
     /**
      * @inheritDoc
+     *
+     * @throws \PhpCollective\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException
+     * @throws \PhpCollective\Infrastructure\Storage\Processor\Exception\VariantException
      */
     public function removeVariant(FileInterface $file, string $name): FileInterface
     {
@@ -179,7 +188,7 @@ class FileStorage implements FileStorageInterface
         if (empty($variant['path'])) {
             throw new VariantException(sprintf(
                 'Variant `%s` is missing a path',
-                $name
+                $name,
             ));
         }
 
@@ -195,6 +204,7 @@ class FileStorage implements FileStorageInterface
      * Gets the storage abstraction to use
      *
      * @param string $storage Storage name to use
+     *
      * @return \League\Flysystem\AdapterInterface
      */
     public function getStorage(string $storage): AdapterInterface

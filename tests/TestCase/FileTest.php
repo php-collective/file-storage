@@ -7,21 +7,21 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase;
+namespace PhpCollective\Test\TestCase;
 
-use Phauthentic\Infrastructure\Storage\File;
-use Phauthentic\Infrastructure\Storage\FileFactory;
-use Phauthentic\Infrastructure\Storage\FileInterface;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilder;
-use Phauthentic\Infrastructure\Storage\Utility\MimeType;
-use Phauthentic\Infrastructure\Storage\Utility\PathInfo;
+use PhpCollective\Infrastructure\Storage\File;
+use PhpCollective\Infrastructure\Storage\FileFactory;
+use PhpCollective\Infrastructure\Storage\FileInterface;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
+use PhpCollective\Infrastructure\Storage\Utility\MimeType;
+use PhpCollective\Infrastructure\Storage\Utility\PathInfo;
 use RuntimeException;
 
 /**
@@ -64,7 +64,7 @@ class FileTest extends TestCase
             ->belongsToModel('User', '1')
             ->withMetadata([
                 'one' => 'two',
-                'two' => 'one'
+                'two' => 'one',
             ])
             ->withMetadataByKey('bar', 'foo');
 
@@ -73,7 +73,7 @@ class FileTest extends TestCase
         $expectedMetadata = [
             'one' => 'two',
             'two' => 'one',
-            'bar' => 'foo'
+            'bar' => 'foo',
         ];
 
         $this->assertEquals('914e1512-9153-4253-a81e-7ee2edc1d973', $file->uuid());

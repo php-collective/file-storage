@@ -1,8 +1,6 @@
 # File Storage
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/Phauthentic/file-storage/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/Phauthentic/file-storage/)
-[![Code Quality](https://img.shields.io/scrutinizer/g/Phauthentic/file-storage/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/Phauthentic/file-storage/)
 
 A framework agnostic file storage system.
 
@@ -22,7 +20,7 @@ This library is pretty much the same as these plugins for [Laravel](https://gith
 ## Installation
 
 ```sh
-composer require phauthentic/file-storage
+composer require php-collective/file-storage
 ```
 
 ## Documentation
@@ -38,9 +36,3 @@ php example.php
 ```
 
 The example should give you an exhaustive overview of the library.
-
-## License
-
-Copyright 2020 Florian Krämer
-
-Licensed under the [MIT license](license.txt).

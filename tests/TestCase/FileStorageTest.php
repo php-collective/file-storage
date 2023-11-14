@@ -7,21 +7,21 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Test\TestCase;
+namespace PhpCollective\Test\TestCase;
 
-use Phauthentic\Infrastructure\Storage\Factories\LocalFactory;
-use Phauthentic\Infrastructure\Storage\FileFactory;
-use Phauthentic\Infrastructure\Storage\FileStorage;
-use Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilder;
-use Phauthentic\Infrastructure\Storage\StorageAdapterFactory;
-use Phauthentic\Infrastructure\Storage\StorageService;
+use PhpCollective\Infrastructure\Storage\Factories\LocalFactory;
+use PhpCollective\Infrastructure\Storage\FileFactory;
+use PhpCollective\Infrastructure\Storage\FileStorage;
+use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
+use PhpCollective\Infrastructure\Storage\StorageAdapterFactory;
+use PhpCollective\Infrastructure\Storage\StorageService;
 
 /**
  * File Storage Test
@@ -43,14 +43,14 @@ class FileStorageTest extends TestCase
             'local' => [
                 'class' => LocalFactory::class,
                 'options' => [
-                    'root' => $this->storageRoot . $ds . 'storage1' . $ds
-                ]
+                    'root' => $this->storageRoot . $ds . 'storage1' . $ds,
+                ],
             ],
         ]);
 
         $fileStorage = new FileStorage(
             $storageService,
-            new PathBuilder()
+            new PathBuilder(),
         );
 
         $fileOnDisk = $this->getFixtureFile('titus.jpg');

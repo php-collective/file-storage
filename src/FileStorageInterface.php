@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage;
+namespace PhpCollective\Infrastructure\Storage;
 
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
@@ -28,24 +28,27 @@ interface FileStorageInterface
      * Stores the file in the storage backend and provides the file entity
      * with a path after the file was stored.
      *
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
      * @param \League\Flysystem\Config|null $config Flysystem Config when storing a file
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
      */
     public function store(FileInterface $file, ?Config $config = null): FileInterface;
 
     /**
      * Removes a file from the storage backend
      *
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
      */
     public function remove(FileInterface $file): FileInterface;
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
      * @param string $name Name
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
      */
     public function removeVariant(FileInterface $file, string $name): FileInterface;
 
@@ -53,6 +56,7 @@ interface FileStorageInterface
      * Gets the storage abstraction to use
      *
      * @param string $storage Storage name to use
+     *
      * @return \League\Flysystem\AdapterInterface
      */
     public function getStorage(string $storage): AdapterInterface;

@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage;
+namespace PhpCollective\Infrastructure\Storage;
 
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
@@ -27,14 +27,14 @@ interface StorageServiceInterface
     /**
      * Adapter Factory
      *
-     * @return \Phauthentic\Infrastructure\Storage\StorageAdapterFactoryInterface
+     * @return \PhpCollective\Infrastructure\Storage\StorageAdapterFactoryInterface
      */
     public function adapterFactory(): StorageAdapterFactoryInterface;
 
     /**
      * Get the adapter collection
      *
-     * @return \Phauthentic\Infrastructure\Storage\AdapterCollectionInterface
+     * @return \PhpCollective\Infrastructure\Storage\AdapterCollectionInterface
      */
     public function adapters(): AdapterCollectionInterface;
 
@@ -42,6 +42,7 @@ interface StorageServiceInterface
      * Gets an adapter instance, lazy loads it as needed.
      *
      * @param string $name
+     *
      * @return \League\Flysystem\AdapterInterface
      */
     public function adapter(string $name): AdapterInterface;
@@ -52,6 +53,7 @@ interface StorageServiceInterface
      * @param string $name
      * @param string $class
      * @param array $options
+     *
      * @return void
      */
     public function addAdapterConfig(string $name, string $class, array $options);
@@ -63,6 +65,7 @@ interface StorageServiceInterface
      * @param string $path Path where the file is stored
      * @param resource $resource Resource to store
      * @param \League\Flysystem\Config|null $config
+     *
      * @return array
      */
     public function storeResource(string $adapter, string $path, $resource, ?Config $config = null): array;
@@ -74,6 +77,7 @@ interface StorageServiceInterface
      * @param string $path Path where the file is stored
      * @param string $file File to store
      * @param \League\Flysystem\Config|null $config
+     *
      * @return array
      */
     public function storeFile(string $adapter, string $path, string $file, ?Config $config = null): array;
@@ -83,6 +87,7 @@ interface StorageServiceInterface
      *
      * @param string $adapter Adapter
      * @param string $path Path
+     *
      * @return bool
      */
     public function fileExists(string $adapter, string $path): bool;
@@ -92,6 +97,7 @@ interface StorageServiceInterface
      *
      * @param string $adapter Name
      * @param string $path File to delete
+     *
      * @return bool
      */
     public function removeFile(string $adapter, string $path): bool;

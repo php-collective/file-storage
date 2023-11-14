@@ -7,20 +7,20 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Storage\Test\TestCase;
+namespace PhpCollective\Storage\Test\TestCase;
 
 use League\Flysystem\Adapter\Local;
-use Phauthentic\Infrastructure\Storage\StorageAdapterFactory;
-use Phauthentic\Infrastructure\Storage\StorageAdapterFactoryInterface;
-use Phauthentic\Infrastructure\Storage\StorageService;
-use Phauthentic\Test\TestCase\TestCase;
+use PhpCollective\Infrastructure\Storage\StorageAdapterFactory;
+use PhpCollective\Infrastructure\Storage\StorageAdapterFactoryInterface;
+use PhpCollective\Infrastructure\Storage\StorageService;
+use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * StorageTest
@@ -33,7 +33,7 @@ class StorageServiceTest extends TestCase
     public function testStorage(): void
     {
         $service = new StorageService(
-            new StorageAdapterFactory()
+            new StorageAdapterFactory(),
         );
 
         $this->assertFalse($service->adapters()->has('local'));
@@ -42,9 +42,9 @@ class StorageServiceTest extends TestCase
             'local' => [
                 'class' => 'Local',
                 'options' => [
-                    'root' => $this->storageRoot
-                ]
-            ]
+                    'root' => $this->storageRoot,
+                ],
+            ],
         ]);
 
         $adapter = $service->adapter('local');
@@ -59,14 +59,14 @@ class StorageServiceTest extends TestCase
         $result = $service->storeFile(
             'local',
             '/horse/photo.jpg',
-            $this->getFixtureFile('titus.jpg')
+            $this->getFixtureFile('titus.jpg'),
         );
         $this->assertIsArray($result);
 
         $result = $service->storeResource(
             'local',
             '/horse/photo.jpg',
-            fopen($this->getFixtureFile('titus.jpg'), 'rb')
+            fopen($this->getFixtureFile('titus.jpg'), 'rb'),
         );
         $this->assertIsArray($result);
 

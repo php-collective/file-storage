@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Utility;
+namespace PhpCollective\Infrastructure\Storage\Utility;
 
 /**
  * FilenameSanitizerInterface
@@ -25,6 +25,7 @@ interface FilenameSanitizerInterface
      * Removes or replaces non alphanumeric chars, asserts length.
      *
      * @param string $filename Filename
+     *
      * @return string
      */
     public function sanitize(string $filename): string;
@@ -33,6 +34,7 @@ interface FilenameSanitizerInterface
      * Beautifies a filename to make it better to read.
      *
      * @param string $filename Filename
+     *
      * @return string
      */
     public function beautify(string $filename): string;

@@ -7,14 +7,14 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
- * @author    Florian Krämer
- * @link      https://github.com/Phauthentic
- * @license   https://opensource.org/licenses/MIT MIT License
+ * @author Florian Krämer
+ * @link https://github.com/Phauthentic
+ * @license https://opensource.org/licenses/MIT MIT License
  */
 
 declare(strict_types=1);
 
-namespace Phauthentic\Infrastructure\Storage\Utility;
+namespace PhpCollective\Infrastructure\Storage\Utility;
 
 /**
  * Temporary File
@@ -28,6 +28,7 @@ class TemporaryFile
 
     /**
      * @param string $tempDir
+     *
      * @return void
      */
     public static function setTempFolder(string $tempDir): void
@@ -52,6 +53,6 @@ class TemporaryFile
      */
     public static function create(): string
     {
-        return tempnam(static::tempDir(), '');
+        return (string)tempnam(static::tempDir(), '');
     }
 }
