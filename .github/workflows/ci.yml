@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   testsuite:
     name: Unittests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -30,9 +30,6 @@ jobs:
           composer install
         fi
 
-    - name: Phive install
-      run: php config/composer_phive.php
-
     - name: Run PHPUnit
       run: |
         if [[ ${{ matrix.php-version }} == '8.1' ]]; then
@@ -47,7 +44,7 @@ jobs:
 
   cs-stan:
     name: Coding Standard & Static Analysis
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -61,13 +58,10 @@ jobs:
         tools: pecl
 
     - name: Composer install
-      run: composer update --prefer-lowest --prefer-stable
-
-    - name: Phive install
-      run: php config/composer_phive.php
+      run: composer update --prefer-stable
 
     - name: Run phpcs
       run: bin/phpcs --version && bin/phpcs --report=checkstyle
 
     - name: Run phpstan
-      run: bin/phpstan -V && bin/phpstan analyse --error-format=github
+      run: bin/phpstan -V && bin/phpstan analyze --error-format=github
