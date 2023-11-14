@@ -204,6 +204,9 @@ class File implements FileInterface
     public function withFile(string $file): FileInterface
     {
         $resource = fopen($file, 'rb');
+        if ($resource === false) {
+            throw new RuntimeException('Cannot open file `' . $file . '`');
+        }
 
         return $this->withResource($resource);
     }

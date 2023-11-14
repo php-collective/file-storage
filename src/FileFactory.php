@@ -70,6 +70,9 @@ class FileFactory implements FileFactoryInterface
         );
 
         $resource = fopen($path, 'rb');
+        if ($resource === false) {
+            throw new RuntimeException('Cannot open file `' . $path . '`');
+        }
 
         return $file->withResource($resource);
     }
