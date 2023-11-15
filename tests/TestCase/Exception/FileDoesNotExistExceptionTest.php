@@ -30,7 +30,7 @@ class FileDoesNotExistExceptionTest extends TestCase
     {
         $exception = FileDoesNotExistException::filename('foobar.jpg');
         $this->assertEquals(
-            'File foobar.jpg does not exist',
+            'File `foobar.jpg` does not exist',
             $exception->getMessage(),
         );
     }

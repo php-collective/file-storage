@@ -30,7 +30,7 @@ class FileNotReadableExceptionTest extends TestCase
     {
         $exception = FileNotReadableException::filename('foobar.jpg');
         $this->assertEquals(
-            'File foobar.jpg is not readable',
+            'File `foobar.jpg` is not readable',
             $exception->getMessage(),
         );
     }

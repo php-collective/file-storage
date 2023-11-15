@@ -111,7 +111,8 @@ class AdapterCollection implements AdapterCollectionInterface
      */
     public function getNameToClassmap(): array
     {
-        if (!$this->adapters) {
+        // phpcs:disable PhpCollective.ControlStructures.DisallowCloakingCheck.FixableEmpty
+        if (empty($this->adapters)) {
             return [];
         }
 
