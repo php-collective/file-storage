@@ -33,14 +33,14 @@ jobs:
     - name: Run PHPUnit
       run: |
         if [[ ${{ matrix.php-version }} == '8.1' ]]; then
-          bin/phpunit --coverage-clover=coverage.xml
+          vendor/bin/phpunit --coverage-clover=coverage.xml
         else
-          bin/phpunit
+          vendor/bin/phpunit
         fi
 
     - name: Code Coverage Report
       if: success() && matrix.php-version == '8.1'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
 
   cs-stan:
     name: Coding Standard & Static Analysis
@@ -61,7 +61,7 @@ jobs:
       run: composer update --prefer-stable
 
     - name: Run phpcs
-      run: bin/phpcs --version && bin/phpcs --report=checkstyle
+      run: vendor/bin/phpcs --version && vendor/bin/phpcs --report=checkstyle
 
     - name: Run phpstan
-      run: bin/phpstan -V && bin/phpstan analyze --error-format=github
+      run: vendor/bin/phpstan -V && vendor/bin/phpstan analyze --error-format=github
