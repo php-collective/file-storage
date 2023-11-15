@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -11,8 +12,6 @@
  * @link https://github.com/Phauthentic
  * @license https://opensource.org/licenses/MIT MIT License
  */
-
-declare(strict_types=1);
 
 namespace PhpCollective\Test\TestCase\Utility;
 

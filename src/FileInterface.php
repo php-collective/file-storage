@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -11,8 +12,6 @@
  * @link https://github.com/Phauthentic
  * @license https://opensource.org/licenses/MIT MIT License
  */
-
-declare(strict_types=1);
 
 namespace PhpCollective\Infrastructure\Storage;
 
@@ -95,7 +94,7 @@ interface FileInterface extends JsonSerializable
      *
      * @return $this
      */
-    public function addToCollection(string $collection): self;
+    public function addToCollection(string $collection);
 
     /**
      * Get a variant
@@ -252,9 +251,9 @@ interface FileInterface extends JsonSerializable
      *
      * @param \PhpCollective\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface $urlBuilder URL Builder
      *
-     * @return self
+     * @return $this
      */
-    public function buildUrl(UrlBuilderInterface $urlBuilder): self;
+    public function buildUrl(UrlBuilderInterface $urlBuilder);
 
     /**
      * Gets the URL for the file
@@ -313,7 +312,7 @@ interface FileInterface extends JsonSerializable
      * @param string $model Model
      * @param string|int $modelId Model ID, UUID string or integer
      *
-     * @return self
+     * @return $this
      */
-    public function belongsToModel(string $model, $modelId): self;
+    public function belongsToModel(string $model, $modelId);
 }

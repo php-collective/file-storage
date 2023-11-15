@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -11,8 +12,6 @@
  * @link https://github.com/Phauthentic
  * @license https://opensource.org/licenses/MIT MIT License
  */
-
-declare(strict_types=1);
 
 namespace PhpCollective\Infrastructure\Storage;
 
@@ -119,8 +118,8 @@ class File implements FileInterface
      * @param string|null $collection Collection name
      * @param string|null $model Model name
      * @param string|null $modelId Model id
-     * @param array $variants Variants
      * @param array $metadata Meta data
+     * @param array $variants Variants
      * @param resource|null $resource
      *
      * @return self
@@ -199,6 +198,8 @@ class File implements FileInterface
      *
      * @param string $file File
      *
+     * @throws \RuntimeException
+     *
      * @return self
      */
     public function withFile(string $file): FileInterface
@@ -251,9 +252,9 @@ class File implements FileInterface
      * @param string $model Model
      * @param string|int $modelId Model ID, UUID string or integer
      *
-     * @return self
+     * @return $this
      */
-    public function belongsToModel(string $model, $modelId): FileInterface
+    public function belongsToModel(string $model, $modelId)
     {
         $this->model = $model;
         $this->modelId = (string)$modelId;
@@ -266,9 +267,9 @@ class File implements FileInterface
      *
      * @param string $collection Collection
      *
-     * @return self
+     * @return $this
      */
-    public function addToCollection(string $collection): FileInterface
+    public function addToCollection(string $collection)
     {
         $this->collection = $collection;
 
@@ -562,7 +563,9 @@ class File implements FileInterface
 
     /**
      * @param string $key
-     * @param mixed $data;
+     * @param mixed $data
+     *
+     * @return self
      */
     public function withMetadataKey(string $key, $data): FileInterface
     {
@@ -605,7 +608,7 @@ class File implements FileInterface
     /**
      * @inheritDoc
      */
-    public function buildUrl(UrlBuilderInterface $urlBuilder): FileInterface
+    public function buildUrl(UrlBuilderInterface $urlBuilder)
     {
         $this->url = $urlBuilder->url($this);
 

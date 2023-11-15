@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -12,8 +13,6 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-declare(strict_types=1);
-
 namespace PhpCollective\Infrastructure\Storage\Exception;
 
 /**
@@ -21,6 +20,9 @@ namespace PhpCollective\Infrastructure\Storage\Exception;
  */
 class InvalidStreamResourceException extends StorageException
 {
+    /**
+     * @return self
+     */
     public static function create(): self
     {
         return new self(

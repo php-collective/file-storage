@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
  * Licensed under The MIT License
@@ -11,8 +13,6 @@
  * @link https://github.com/Phauthentic
  * @license https://opensource.org/licenses/MIT MIT License
  */
-
-declare(strict_types=1);
 
 namespace PhpCollective\Infrastructure\Storage;
 

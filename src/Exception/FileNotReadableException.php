@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -12,8 +13,6 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-declare(strict_types=1);
-
 namespace PhpCollective\Infrastructure\Storage\Exception;
 
 /**
@@ -21,10 +20,15 @@ namespace PhpCollective\Infrastructure\Storage\Exception;
  */
 class FileNotReadableException extends StorageException
 {
+    /**
+     * @param string $file
+     *
+     * @return self
+     */
     public static function filename(string $file): self
     {
         return new self(sprintf(
-            'File %s is not readable',
+            'File `%s` is not readable',
             $file,
         ));
     }
