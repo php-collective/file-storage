@@ -14,9 +14,8 @@
 
 namespace PhpCollective\Infrastructure\Storage;
 
-use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
-use PhpCollective\Infrastructure\Storage\Exception\StorageException;
+use League\Flysystem\FilesystemAdapter;
 use PhpCollective\Infrastructure\Storage\Factories\Exception\FactoryNotFoundException;
 use RuntimeException;
 
@@ -81,7 +80,7 @@ class StorageService implements StorageServiceInterface
      *
      * @throws \PhpCollective\Infrastructure\Storage\Factories\Exception\FactoryNotFoundException
      */
-    public function adapter(string $name): AdapterInterface
+    public function adapter(string $name): FilesystemAdapter
     {
         if ($this->adapterCollection->has($name)) {
             return $this->adapterCollection->get($name);
@@ -103,9 +102,9 @@ class StorageService implements StorageServiceInterface
      * @param string $adapter Adapter
      * @param array $options
      *
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
-    public function loadAdapter(string $name, string $adapter, array $options): AdapterInterface
+    public function loadAdapter(string $name, string $adapter, array $options): FilesystemAdapter
     {
         $adapter = $this->adapterFactory->buildStorageAdapter(
             $adapter,
@@ -174,45 +173,20 @@ class StorageService implements StorageServiceInterface
 
     /**
      * @inheritDoc
-     *
-     * @throws \PhpCollective\Infrastructure\Storage\Exception\StorageException
      */
-    public function storeResource(string $adapter, string $path, $resource, ?Config $config = null): array
+    public function storeResource(string $adapter, string $path, $resource, ?Config $config = null): void
     {
         $config = $this->makeConfigIfNeeded($config);
-        $result = $this->adapter($adapter)->writeStream($path, $resource, $config);
-
-        if ($result === false) {
-            throw new StorageException(sprintf(
-                'Failed to store resource stream to in `%s` with path `%s`',
-                $adapter,
-                $path,
-            ));
-        }
-
-        return $result;
+        $this->adapter($adapter)->writeStream($path, $resource, $config);
     }
 
     /**
      * @inheritDoc
-     *
-     * @throws \PhpCollective\Infrastructure\Storage\Exception\StorageException
      */
-    public function storeFile(string $adapter, string $path, string $file, ?Config $config = null): array
+    public function storeFile(string $adapter, string $path, string $file, ?Config $config = null): void
     {
         $config = $this->makeConfigIfNeeded($config);
-        $result = $this->adapter($adapter)->write($path, (string)file_get_contents($file), $config);
-
-        if ($result === false) {
-            throw new StorageException(sprintf(
-                'Failed to store file `%s` in `%s` with path `%s`',
-                $file,
-                $adapter,
-                $path,
-            ));
-        }
-
-        return $result;
+        $this->adapter($adapter)->write($path, (string)file_get_contents($file), $config);
     }
 
     /**
@@ -223,17 +197,17 @@ class StorageService implements StorageServiceInterface
      */
     public function fileExists(string $adapter, string $path): bool
     {
-        return $this->adapter($adapter)->has($path);
+        return $this->adapter($adapter)->fileExists($path);
     }
 
     /**
      * @param string $adapter Name
      * @param string $path File to delete
      *
-     * @return bool
+     * @return void
      */
-    public function removeFile(string $adapter, string $path): bool
+    public function removeFile(string $adapter, string $path): void
     {
-        return $this->adapter($adapter)->delete($path);
+        $this->adapter($adapter)->delete($path);
     }
 }

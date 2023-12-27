@@ -14,8 +14,8 @@
 
 namespace PhpCollective\Infrastructure\Storage;
 
-use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\FilesystemAdapter;
 
 /**
  * FileStorageInterface
@@ -55,7 +55,7 @@ interface FileStorageInterface
      *
      * @param string $storage Storage name to use
      *
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
-    public function getStorage(string $storage): AdapterInterface;
+    public function getStorage(string $storage): FilesystemAdapter;
 }

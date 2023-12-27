@@ -15,7 +15,7 @@ namespace PhpCollective\Infrastructure\Storage;
 
 use ArrayIterator;
 use Iterator;
-use League\Flysystem\AdapterInterface;
+use League\Flysystem\FilesystemAdapter;
 use RuntimeException;
 
 /**
@@ -38,13 +38,13 @@ class AdapterCollection implements AdapterCollectionInterface
 
     /**
      * @param string $name Name
-     * @param \League\Flysystem\AdapterInterface $adapter Adapter
+     * @param \League\Flysystem\FilesystemAdapter $adapter Adapter
      *
      * @throws \RuntimeException
      *
      * @return void
      */
-    public function add($name, AdapterInterface $adapter)
+    public function add($name, FilesystemAdapter $adapter)
     {
         if ($this->has($name)) {
             throw new RuntimeException(sprintf(
@@ -81,9 +81,9 @@ class AdapterCollection implements AdapterCollectionInterface
      *
      * @throws \RuntimeException
      *
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
-    public function get(string $name): AdapterInterface
+    public function get(string $name): FilesystemAdapter
     {
         if (!$this->has($name)) {
             throw new RuntimeException(sprintf(

@@ -15,8 +15,8 @@
 namespace PhpCollective\Infrastructure\Storage;
 
 use InvalidArgumentException;
-use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\FilesystemAdapter;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
 use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException;
 use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantException;
@@ -203,9 +203,9 @@ class FileStorage implements FileStorageInterface
      *
      * @param string $storage Storage name to use
      *
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
-    public function getStorage(string $storage): AdapterInterface
+    public function getStorage(string $storage): FilesystemAdapter
     {
         return $this->storageService->adapter($storage);
     }

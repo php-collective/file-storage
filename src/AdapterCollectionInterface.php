@@ -14,7 +14,7 @@
 namespace PhpCollective\Infrastructure\Storage;
 
 use IteratorAggregate;
-use League\Flysystem\AdapterInterface;
+use League\Flysystem\FilesystemAdapter;
 
 /**
  * Factory Collection Interface
@@ -23,11 +23,11 @@ interface AdapterCollectionInterface extends IteratorAggregate
 {
     /**
      * @param string $name Name
-     * @param \League\Flysystem\AdapterInterface $adapter Adapter
+     * @param \League\Flysystem\FilesystemAdapter $adapter Adapter
      *
      * @return void
      */
-    public function add($name, AdapterInterface $adapter);
+    public function add($name, FilesystemAdapter $adapter);
 
     /**
      * @param string $name Name
@@ -46,9 +46,9 @@ interface AdapterCollectionInterface extends IteratorAggregate
     /**
      * @param string $name
      *
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
-    public function get(string $name): AdapterInterface;
+    public function get(string $name): FilesystemAdapter;
 
     /**
      * Empties the collection
