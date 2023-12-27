@@ -11,7 +11,7 @@ This library is pretty much the same as these plugins for [Laravel](https://gith
 ## Features
 
  * **Store files on almost everything:** Local disk, Amazon S3, Dropbox... and many more through the fantastic [league/flysystem](thephpleague/flysystem) library.
- * Framework agnostic
+ * Framework-agnostic
  * Image processing (optional feature / dependency)
  * Image optimization (optional feature / dependency)
  * Provides factories for the adapters
@@ -25,7 +25,7 @@ composer require php-collective/file-storage
 
 ## Documentation
 
-Please start by reading [docs/readme.md](/docs/readme.md) in this repository.
+Please start by reading [docs/](/docs/readme.md) in this repository.
 
 ## Example
 
