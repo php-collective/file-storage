@@ -1,5 +1,6 @@
 # File Storage
 
+[![CI](https://github.com/php-collective/file-storage/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/php-collective/file-storage/actions/workflows/ci.yml)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
 A framework agnostic file storage system.
