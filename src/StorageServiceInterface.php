@@ -14,8 +14,8 @@
 
 namespace PhpCollective\Infrastructure\Storage;
 
-use League\Flysystem\AdapterInterface;
 use League\Flysystem\Config;
+use League\Flysystem\FilesystemAdapter;
 
 /**
  * StorageServiceInterface
@@ -41,9 +41,9 @@ interface StorageServiceInterface
      *
      * @param string $name
      *
-     * @return \League\Flysystem\AdapterInterface
+     * @return \League\Flysystem\FilesystemAdapter
      */
-    public function adapter(string $name): AdapterInterface;
+    public function adapter(string $name): FilesystemAdapter;
 
     /**
      * Adds an adapter config
@@ -64,9 +64,9 @@ interface StorageServiceInterface
      * @param resource $resource Resource to store
      * @param \League\Flysystem\Config|null $config
      *
-     * @return array
+     * @return void
      */
-    public function storeResource(string $adapter, string $path, $resource, ?Config $config = null): array;
+    public function storeResource(string $adapter, string $path, $resource, ?Config $config = null): void;
 
     /**
      * Stores a file in a storage backend
@@ -76,9 +76,9 @@ interface StorageServiceInterface
      * @param string $file File to store
      * @param \League\Flysystem\Config|null $config
      *
-     * @return array
+     * @return void
      */
-    public function storeFile(string $adapter, string $path, string $file, ?Config $config = null): array;
+    public function storeFile(string $adapter, string $path, string $file, ?Config $config = null): void;
 
     /**
      * Checks if a file exists in a store
@@ -96,7 +96,7 @@ interface StorageServiceInterface
      * @param string $adapter Name
      * @param string $path File to delete
      *
-     * @return bool
+     * @return void
      */
-    public function removeFile(string $adapter, string $path): bool;
+    public function removeFile(string $adapter, string $path): void;
 }
