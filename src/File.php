@@ -596,12 +596,36 @@ class File implements FileInterface
     public function withVariants(array $variants, bool $merge = true): FileInterface
     {
         $that = clone $this;
-        $that->variants = array_merge_recursive(
+        $that->variants = $this->arrayMergeDeep(
             $merge ? $that->variants : [],
             $variants,
         );
 
         return $that;
+    }
+
+    /**
+     * Sets many variants at once
+     *
+     * @param array $array1
+     * @param array $array2
+     *
+     * @return array
+     */
+    protected function arrayMergeDeep(array $array1, array $array2): array {
+        foreach ($array2 as $key => $value) {
+            if (
+                isset($array1[$key]) &&
+                is_array($array1[$key]) &&
+                is_array($value)
+            ) {
+                $array1[$key] = $this->arrayMergeDeep($array1[$key], $value);
+            } else {
+                $array1[$key] = $value;
+            }
+        }
+
+        return $array1;
     }
 
     /**
