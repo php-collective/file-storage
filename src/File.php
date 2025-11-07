@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -71,7 +71,7 @@ class File implements FileInterface
     protected string $storage = 'local';
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $metadata = [];
 
@@ -103,7 +103,7 @@ class File implements FileInterface
     protected string $url = '';
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $variants = [];
 
@@ -133,7 +133,7 @@ class File implements FileInterface
         ?string $modelId = null,
         array $metadata = [],
         array $variants = [],
-        $resource = null
+        $resource = null,
     ): FileInterface {
         $that = new self();
 
@@ -355,10 +355,19 @@ class File implements FileInterface
      */
     public function readableSize(): string
     {
-        $i = floor(log($this->filesize, 1024));
-        $round = (string)round($this->filesize / (1024 ** $i), [0, 0, 2, 2, 3][$i]);
+        if ($this->filesize === 0) {
+            return '0 B';
+        }
 
-        return $round . ['B', 'kB', 'MB', 'GB', 'TB'][$i];
+        $units = ['B', 'kB', 'MB', 'GB', 'TB'];
+        $decimals = [0, 0, 2, 2, 3];
+
+        $i = (int)floor(log($this->filesize, 1024));
+        $i = min($i, count($units) - 1);
+
+        $round = (string)round($this->filesize / (1024 ** $i), $decimals[$i]);
+
+        return $round . ' ' . $units[$i];
     }
 
     /**
@@ -612,7 +621,8 @@ class File implements FileInterface
      *
      * @return array
      */
-    protected function arrayMergeDeep(array $array1, array $array2): array {
+    protected function arrayMergeDeep(array $array1, array $array2): array
+    {
         foreach ($array2 as $key => $value) {
             if (
                 isset($array1[$key]) &&

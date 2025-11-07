@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -32,7 +32,7 @@ class FileFactory implements FileFactoryInterface
      */
     public static function fromUploadedFile(
         UploadedFileInterface $uploadedFile,
-        string $storage
+        string $storage,
     ): FileInterface {
         static::checkUploadedFile($uploadedFile);
 

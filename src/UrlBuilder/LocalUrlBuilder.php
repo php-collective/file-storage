@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -51,9 +51,9 @@ class LocalUrlBuilder implements UrlBuilderInterface
         return str_replace('\\', '/', $this->buildBaseUrl() . $file->path());
     }
 
-   /**
-    * @inheritDoc
-    */
+    /**
+     * @inheritDoc
+     */
     public function urlForVariant(FileInterface $file, string $variant): string
     {
         if (!isset($file->variants()[$variant])) {

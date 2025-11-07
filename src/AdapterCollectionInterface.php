@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
  * Licensed under The MIT License

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -21,18 +21,18 @@ use PhpCollective\Infrastructure\Storage\FileInterface;
  */
 interface UrlBuilderInterface
 {
-   /**
-    * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
-    *
-    * @return string
-    */
+    /**
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
+     *
+     * @return string
+     */
     public function url(FileInterface $file): string;
 
-   /**
-    * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
-    * @param string $variant Version
-    *
-    * @return string
-    */
+    /**
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
+     * @param string $variant Version
+     *
+     * @return string
+     */
     public function urlForVariant(FileInterface $file, string $variant): string;
 }

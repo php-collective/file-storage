@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -110,7 +110,7 @@ class FileTest extends TestCase
             'model' => 'User',
             'modelId' => '1',
             'collection' => 'avatar',
-            'readableSize' => '325kB',
+            'readableSize' => '325 kB',
             'variants' => [],
             'metadata' => [
                 'one' => 'two',

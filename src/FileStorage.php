@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -63,7 +63,7 @@ class FileStorage implements FileStorageInterface
     public function __construct(
         StorageServiceInterface $storageService,
         ?PathBuilderInterface $pathBuilder = null,
-        ?UrlBuilderInterface $urlBuilder = null
+        ?UrlBuilderInterface $urlBuilder = null,
     ) {
         $this->storageService = $storageService;
         $this->pathBuilder = $pathBuilder;

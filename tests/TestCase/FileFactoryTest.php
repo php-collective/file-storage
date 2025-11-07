@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -14,9 +14,9 @@
 
 namespace PhpCollective\Test\TestCase;
 
-use GuzzleHttp\Psr7\LazyOpenStream;
 use PhpCollective\Infrastructure\Storage\FileFactory;
 use PhpCollective\Infrastructure\Storage\FileInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 
@@ -47,7 +47,21 @@ class FileFactoryTest extends TestCase
      */
     public function testValidUpload(): void
     {
-        $stream = new LazyOpenStream('composer.json', 'r');
+        /** @var \Psr\Http\Message\StreamInterface|\PHPUnit\Framework\MockObject\MockObject $stream */
+        $stream = $this->getMockBuilder(StreamInterface::class)
+            ->getMock();
+
+        $stream->expects($this->any())
+            ->method('isReadable')
+            ->willReturn(true);
+
+        $stream->expects($this->any())
+            ->method('isWritable')
+            ->willReturn(false);
+
+        $stream->expects($this->any())
+            ->method('detach')
+            ->willReturn(fopen('composer.json', 'r'));
 
         /** @var \Psr\Http\Message\UploadedFileInterface|\PHPUnit\Framework\MockObject\MockObject $uploadedFile */
         $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)

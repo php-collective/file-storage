@@ -2,7 +2,7 @@ parameters:
 	level: 8
 	paths:
 		- src/
-	checkMissingIterableValueType: false
-	checkGenericClassInNonGenericObjectType: false
 	ignoreErrors:
-		-  '#Offset \''dirname\'' does not exist on array.+#'
+		- '#Offset ''dirname'' might not exist on array.+#'
+		- identifier: missingType.iterableValue
+		- identifier: missingType.generics

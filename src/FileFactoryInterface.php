@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -31,7 +31,7 @@ interface FileFactoryInterface
      */
     public static function fromUploadedFile(
         UploadedFileInterface $uploadedFile,
-        string $storage
+        string $storage,
     ): FileInterface;
 
     /**

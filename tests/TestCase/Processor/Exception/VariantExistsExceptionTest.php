@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -12,7 +12,7 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-namespace PhpCollective\Test\TestCase\Processor\Image\Exception;
+namespace PhpCollective\Test\TestCase\Processor\Exception;
 
 use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantExistsException;
 use PhpCollective\Test\TestCase\TestCase;

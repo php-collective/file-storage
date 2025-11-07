@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -12,13 +12,12 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-namespace PhpCollective\Storage\Test\TestCase;
+namespace PhpCollective\Test\TestCase;
 
-use League\Flysystem\Adapter\Local;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use PhpCollective\Infrastructure\Storage\StorageAdapterFactory;
 use PhpCollective\Infrastructure\Storage\StorageAdapterFactoryInterface;
 use PhpCollective\Infrastructure\Storage\StorageService;
-use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * StorageTest
@@ -47,28 +46,28 @@ class StorageServiceTest extends TestCase
 
         $adapter = $service->adapter('local');
         $this->assertTrue($service->adapters()->has('local'));
-        $this->assertInstanceOf(Local::class, $adapter);
+        $this->assertInstanceOf(LocalFilesystemAdapter::class, $adapter);
 
         $result = $service->adapterFactory();
         $this->assertInstanceOf(StorageAdapterFactoryInterface::class, $result);
 
         $this->assertFalse($service->fileExists('local', 'doesnot'));
 
-        $result = $service->storeFile(
+        $service->storeFile(
             'local',
             '/horse/photo.jpg',
             $this->getFixtureFile('titus.jpg'),
         );
-        $this->assertIsArray($result);
+        $this->assertTrue($service->fileExists('local', '/horse/photo.jpg'));
 
-        $result = $service->storeResource(
+        $service->storeResource(
             'local',
-            '/horse/photo.jpg',
+            '/horse/photo2.jpg',
             fopen($this->getFixtureFile('titus.jpg'), 'rb'),
         );
-        $this->assertIsArray($result);
+        $this->assertTrue($service->fileExists('local', '/horse/photo2.jpg'));
 
-        $result = $service->removeFile('local', '/horse/photo.jpg');
-        $this->assertTrue($result);
+        $service->removeFile('local', '/horse/photo.jpg');
+        $this->assertFalse($service->fileExists('local', '/horse/photo.jpg'));
     }
 }

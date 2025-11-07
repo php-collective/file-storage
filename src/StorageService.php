@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -51,7 +51,7 @@ class StorageService implements StorageServiceInterface
      */
     public function __construct(
         StorageAdapterFactoryInterface $adapterFactory,
-        ?AdapterCollectionInterface $factoryCollection = null
+        ?AdapterCollectionInterface $factoryCollection = null,
     ) {
         $this->adapterFactory = $adapterFactory;
         $this->adapterCollection = $factoryCollection ?? new AdapterCollection();

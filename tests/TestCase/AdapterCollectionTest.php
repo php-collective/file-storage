@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -12,12 +12,11 @@
  * @license https://opensource.org/licenses/MIT MIT License
  */
 
-namespace PhpCollective\Storage\Test\TestCase;
+namespace PhpCollective\Test\TestCase;
 
 use ArrayIterator;
-use League\Flysystem\Adapter\NullAdapter;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use PhpCollective\Infrastructure\Storage\AdapterCollection;
-use PhpCollective\Test\TestCase\TestCase;
 
 /**
  * AdapterCollectionTest
@@ -30,7 +29,7 @@ class AdapterCollectionTest extends TestCase
     public function testAdapterCollection(): void
     {
         $collection = new AdapterCollection();
-        $adapter = new NullAdapter();
+        $adapter = new LocalFilesystemAdapter(sys_get_temp_dir());
 
         $this->assertFalse($collection->has('doesnotexist'));
 

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -228,11 +228,10 @@ class FilenameSanitizer implements FilenameSanitizerInterface
      */
     protected function stringToLowerCase(
         string $string,
-        string $encoding = 'UTF-8'
+        string $encoding = 'UTF-8',
     ): string {
-        return ((function_exists('mb_strtolower')) ?
+        return (function_exists('mb_strtolower')) ?
             mb_strtolower($string, $encoding) :
-            strtolower($string)
-        );
+            strtolower($string);
     }
 }

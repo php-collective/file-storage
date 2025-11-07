@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 /**
  * Copyright (c) Florian Krämer (https://florian-kraemer.net)
@@ -289,7 +289,7 @@ class PathBuilder implements PathBuilderInterface
     protected function parseTemplate(
         array $placeholders,
         string $template,
-        string $separator
+        string $separator,
     ): string {
         $result = str_replace(
             array_keys($placeholders),
