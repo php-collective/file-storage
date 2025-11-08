@@ -26,7 +26,7 @@
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^10.3 || ^11.5 || ^12.4",
         "php-collective/code-sniffer": "^0.4.1",
-        "php-collective/file-storage-image-processor": "dev-master as 0.1.0"
+        "php-collective/file-storage-image-processor": "^1.0.0"
     },
     "suggest": {
         "php-collective/file-storage-image-processor": "For image processing"
