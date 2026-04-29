@@ -15,6 +15,7 @@
 namespace PhpCollective\Test\TestCase\PathBuilder;
 
 use DateTime;
+use DateTimeInterface;
 use PhpCollective\Infrastructure\Storage\FileFactory;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
 use PhpCollective\Infrastructure\Storage\Processor\Image\ImageVariantCollection;
@@ -34,7 +35,7 @@ class PathBuilderTest extends TestCase
         $builder = new class ([
             'pathTemplate' => '{year}{ds}{month}{ds}{day}{ds}{hour}{ds}{minute}',
         ]) extends PathBuilder {
-            protected function getDateObject(): \DateTimeInterface
+            protected function getDateObject(): DateTimeInterface
             {
                 return new DateTime('2020-01-01T20:00:00');
             }

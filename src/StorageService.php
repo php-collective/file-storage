@@ -186,7 +186,7 @@ class StorageService implements StorageServiceInterface
     public function storeFile(string $adapter, string $path, string $file, ?Config $config = null): void
     {
         $config = $this->makeConfigIfNeeded($config);
-        $resource = \PhpCollective\Infrastructure\Storage\openFile($file, 'rb', false);
+        $resource = openFile($file, 'rb', false);
         $this->adapter($adapter)->writeStream($path, $resource, $config);
         fclose($resource);
     }
