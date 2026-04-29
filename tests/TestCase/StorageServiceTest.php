@@ -14,7 +14,9 @@
 
 namespace PhpCollective\Test\TestCase;
 
+use League\Flysystem\Config;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use PhpCollective\Infrastructure\Storage\AdapterCollection;
 use PhpCollective\Infrastructure\Storage\StorageAdapterFactory;
 use PhpCollective\Infrastructure\Storage\StorageAdapterFactoryInterface;
 use PhpCollective\Infrastructure\Storage\StorageService;
@@ -69,5 +71,36 @@ class StorageServiceTest extends TestCase
 
         $service->removeFile('local', '/horse/photo.jpg');
         $this->assertFalse($service->fileExists('local', '/horse/photo.jpg'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testStoreFileUsesStreamWrite(): void
+    {
+        $adapter = $this->createMock(LocalFilesystemAdapter::class);
+        $adapter->expects($this->once())
+            ->method('writeStream')
+            ->with(
+                '/horse/photo.jpg',
+                $this->callback(static fn ($resource): bool => is_resource($resource)),
+                $this->isInstanceOf(Config::class),
+            );
+        $adapter->expects($this->never())
+            ->method('write');
+
+        $collection = new AdapterCollection();
+        $collection->add('local', $adapter);
+
+        $service = new StorageService(
+            new StorageAdapterFactory(),
+            $collection,
+        );
+
+        $service->storeFile(
+            'local',
+            '/horse/photo.jpg',
+            $this->getFixtureFile('titus.jpg'),
+        );
     }
 }

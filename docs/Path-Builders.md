@@ -14,7 +14,10 @@ $builder = new PathBuilder([
 
 ### Options:
 
+ * **directorySeparator**: `DIRECTORY_SEPARATOR`
  * **randomPath**: 'sha1'
+   * Can also be a callable with the signature `function (string $uuid, int $levels): string`
+ * **randomPathLevels**: 3
  * **sanitizeFilename**: true
  * **beautifyFilename**: false
  * **filenameSanitizer**: null|\PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface
@@ -64,6 +67,8 @@ The following placeholders are only valid when used in a path for a manipulated 
 This path builder provides a `setFilenameSanitizer()` method that takes an object implementing `PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface`.
 
 This is an alternative way to provide a sanitizer besides passing it through the configuration array.
+
+The `filenameSanitizer` config option and `setFilenameSanitizer()` are equivalent. Use whichever fits your setup better.
 
 ## Conditional Path Builder
 

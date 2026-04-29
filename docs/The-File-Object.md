@@ -53,6 +53,8 @@ You'll also have to add the (uu)id to the file object if your intended path for 
 
 The file object is serializable to json, and you can call `toArray()` on it to turn it into an array that you can either save in the structure you get or continue transforming it into whatever structure your persistence layer expects.
 
+If you want to serialize the built-in `File` object or use the default `PathBuilder`, make sure you set a UUID first using `withUuid()`. The UUID is treated as required state for persistence and default path generation.
+
 ## Restoring the file object
 
 You'll have to reconstruct the file object later from your persisted information when you want to come back to it later and work with new variants for example. Depending on your architecture, your domain model could also simply implement the `FileInterface` if this is more convenient for your.

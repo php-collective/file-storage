@@ -14,6 +14,7 @@
 
 namespace PhpCollective\Test\TestCase;
 
+use PhpCollective\Infrastructure\Storage\Exception\MissingUuidException;
 use PhpCollective\Infrastructure\Storage\File;
 use PhpCollective\Infrastructure\Storage\FileFactory;
 use PhpCollective\Infrastructure\Storage\FileInterface;
@@ -139,5 +140,35 @@ class FileTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Path has not been set');
         $file->path();
+    }
+
+    /**
+     * @return void
+     */
+    public function testMissingUuidExceptionOnSerialization(): void
+    {
+        $file = File::create(
+            'foobar.jpg',
+            123,
+            'image/jpeg',
+            'local',
+        );
+
+        $this->expectException(MissingUuidException::class);
+        $this->expectExceptionMessage('UUID has not been set');
+        $file->toArray();
+    }
+
+    /**
+     * @return void
+     */
+    public function testMissingUuidExceptionOnPathBuild(): void
+    {
+        $fileOnDisk = $this->getFixtureFile('titus.jpg');
+        $file = FileFactory::fromDisk($fileOnDisk, 'local');
+
+        $this->expectException(MissingUuidException::class);
+        $this->expectExceptionMessage('UUID has not been set');
+        $file->buildPath(new PathBuilder());
     }
 }
