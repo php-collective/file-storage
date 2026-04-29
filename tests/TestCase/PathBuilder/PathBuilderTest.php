@@ -15,9 +15,11 @@
 namespace PhpCollective\Test\TestCase\PathBuilder;
 
 use DateTime;
+use DateTimeInterface;
 use PhpCollective\Infrastructure\Storage\FileFactory;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
 use PhpCollective\Infrastructure\Storage\Processor\Image\ImageVariantCollection;
+use PhpCollective\Infrastructure\Storage\Utility\NoopFilenameSanitizer;
 use PhpCollective\Test\TestCase\TestCase;
 
 /**
@@ -30,19 +32,14 @@ class PathBuilderTest extends TestCase
      */
     public function testDatePaths(): void
     {
-        /** @var \PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder|\PHPUnit\Framework\MockObject\MockObject $builder */
-        $builder = $this->getMockBuilder(PathBuilder::class)
-            ->setConstructorArgs([
-                [
-                    'pathTemplate' => '{year}{ds}{month}{ds}{day}{ds}{hour}{ds}{minute}',
-                ],
-            ])
-            ->onlyMethods(['getDateObject'])
-            ->getMock();
-
-        $builder->expects($this->any())
-            ->method('getDateObject')
-            ->willReturn((new DateTime('2020-01-01T20:00:00')));
+        $builder = new class ([
+            'pathTemplate' => '{year}{ds}{month}{ds}{day}{ds}{hour}{ds}{minute}',
+        ]) extends PathBuilder {
+            protected function getDateObject(): DateTimeInterface
+            {
+                return new DateTime('2020-01-01T20:00:00');
+            }
+        };
 
         $file = $this->getFixtureFile('titus.jpg');
         $file = FileFactory::fromDisk($file, 'local')
@@ -66,6 +63,71 @@ class PathBuilderTest extends TestCase
         $result = $builder->path($file);
 
         $this->assertEquals($this->sanitizeSeparator('/fe/c3/b4/914e151291534253a81e7ee2edc1d973/titus.jpg'), $result);
+    }
+
+    /**
+     * @return void
+     */
+    public function testConfiguredFilenameSanitizerIsUsed(): void
+    {
+        $file = $this->getFixtureFile('titus.jpg');
+        $file = FileFactory::fromDisk($file, 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->withFilename('foo bar.jpg');
+
+        $builder = new PathBuilder([
+            'filenameSanitizer' => new NoopFilenameSanitizer(),
+        ]);
+
+        $result = $builder->path($file);
+
+        $this->assertStringContainsString(
+            $this->sanitizeSeparator('/foo bar.jpg'),
+            $result,
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testConfiguredRandomPathAndDirectorySeparatorAreUsed(): void
+    {
+        $file = $this->getFixtureFile('titus.jpg');
+        $file = FileFactory::fromDisk($file, 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973');
+
+        $builder = new PathBuilder([
+            'directorySeparator' => '-',
+            'randomPath' => static fn (string $uuid, int $level): string => 'custom-path',
+        ]);
+
+        $result = $builder->path($file);
+
+        $this->assertEquals(
+            '-custom-path-914e151291534253a81e7ee2edc1d973-titus.jpg',
+            $result,
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testSha1RandomPathUsesConfiguredDirectorySeparator(): void
+    {
+        $file = $this->getFixtureFile('titus.jpg');
+        $file = FileFactory::fromDisk($file, 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973');
+
+        $builder = new PathBuilder([
+            'directorySeparator' => '-',
+        ]);
+
+        $result = $builder->path($file);
+
+        $this->assertSame(
+            '-fe-c3-b4-914e151291534253a81e7ee2edc1d973-titus.jpg',
+            $result,
+        );
     }
 
     /**

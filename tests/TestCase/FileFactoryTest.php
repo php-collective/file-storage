@@ -30,12 +30,9 @@ class FileFactoryTest extends TestCase
      */
     public function testInvalidUpload(): void
     {
-        /** @var \Psr\Http\Message\UploadedFileInterface|\PHPUnit\Framework\MockObject\MockObject $uploadedFile */
-        $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)
-            ->getMock();
+        $uploadedFile = $this->createStub(UploadedFileInterface::class);
 
-        $uploadedFile->expects($this->any())
-            ->method('getError')
+        $uploadedFile->method('getError')
             ->willReturn(UPLOAD_ERR_NO_FILE);
 
         $this->expectException(RuntimeException::class);
@@ -47,44 +44,32 @@ class FileFactoryTest extends TestCase
      */
     public function testValidUpload(): void
     {
-        /** @var \Psr\Http\Message\StreamInterface|\PHPUnit\Framework\MockObject\MockObject $stream */
-        $stream = $this->getMockBuilder(StreamInterface::class)
-            ->getMock();
+        $stream = $this->createStub(StreamInterface::class);
 
-        $stream->expects($this->any())
-            ->method('isReadable')
+        $stream->method('isReadable')
             ->willReturn(true);
 
-        $stream->expects($this->any())
-            ->method('isWritable')
+        $stream->method('isWritable')
             ->willReturn(false);
 
-        $stream->expects($this->any())
-            ->method('detach')
+        $stream->method('detach')
             ->willReturn(fopen('composer.json', 'r'));
 
-        /** @var \Psr\Http\Message\UploadedFileInterface|\PHPUnit\Framework\MockObject\MockObject $uploadedFile */
-        $uploadedFile = $this->getMockBuilder(UploadedFileInterface::class)
-            ->getMock();
+        $uploadedFile = $this->createStub(UploadedFileInterface::class);
 
-        $uploadedFile->expects($this->any())
-            ->method('getError')
+        $uploadedFile->method('getError')
             ->willReturn(UPLOAD_ERR_OK);
 
-        $uploadedFile->expects($this->any())
-            ->method('getClientFilename')
+        $uploadedFile->method('getClientFilename')
             ->willReturn('titus.jpg');
 
-        $uploadedFile->expects($this->any())
-            ->method('getSize')
+        $uploadedFile->method('getSize')
             ->willReturn(12345);
 
-        $uploadedFile->expects($this->any())
-            ->method('getClientMediaType')
+        $uploadedFile->method('getClientMediaType')
             ->willReturn('image/image-jpg');
 
-        $uploadedFile->expects($this->any())
-            ->method('getStream')
+        $uploadedFile->method('getStream')
             ->willReturn($stream);
 
         $file = FileFactory::fromUploadedFile($uploadedFile, 'local');

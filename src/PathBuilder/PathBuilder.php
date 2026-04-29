@@ -72,9 +72,9 @@ class PathBuilder implements PathBuilderInterface
     {
         $this->config = $config + $this->defaultConfig;
 
-        if (!$this->config['filenameSanitizer'] instanceof FilenameSanitizerInterface) {
-            $this->filenameSanitizer = new FilenameSanitizer();
-        }
+        $this->filenameSanitizer = $this->config['filenameSanitizer'] instanceof FilenameSanitizerInterface
+            ? $this->config['filenameSanitizer']
+            : new FilenameSanitizer();
     }
 
     /**
@@ -177,16 +177,21 @@ class PathBuilder implements PathBuilderInterface
      *
      * @param string $string Input string
      * @param int $level Depth of the path to generate.
-     * @param string $method Hash method, crc32 or sha1.
+     * @param callable|string $method Hash method or callback.
+     * @param string $separator Directory separator to use.
      *
      * @throws \InvalidArgumentException
      *
      * @return string
      */
-    protected function randomPath($string, $level = 3, $method = 'sha1'): string
-    {
+    protected function randomPath(
+        string $string,
+        int $level = 3,
+        $method = 'sha1',
+        string $separator = DIRECTORY_SEPARATOR,
+    ): string {
         if ($method === 'sha1') {
-            return $this->randomPathSha1($string, $level);
+            return $this->randomPathSha1($string, $level, $separator);
         }
 
         if (is_callable($method)) {
@@ -206,17 +211,18 @@ class PathBuilder implements PathBuilderInterface
      *
      * @param string $string Input string
      * @param int $level Depth of the path to generate.
+     * @param string $separator Directory separator to use.
      *
      * @return string
      */
-    protected function randomPathSha1(string $string, int $level): string
+    protected function randomPathSha1(string $string, int $level, string $separator): string
     {
         $result = sha1($string);
         $randomString = '';
         $counter = 0;
         for ($i = 1; $i <= $level; $i++) {
             $counter += 2;
-            $randomString .= substr($result, $counter, 2) . DIRECTORY_SEPARATOR;
+            $randomString .= substr($result, $counter, 2) . $separator;
         }
 
         return substr($randomString, 0, -1);
@@ -238,7 +244,7 @@ class PathBuilder implements PathBuilderInterface
     protected function buildPath(FileInterface $file, ?string $variant, array $options = []): string
     {
         $config = $options + $this->config;
-        $ds = $this->config['directorySeparator'];
+        $ds = $config['directorySeparator'];
         $filename = $this->filename($file, $options);
         $hashedVariant = substr(hash('sha1', (string)$variant), 0, 6);
         $template = $variant ? $config['variantPathTemplate'] : $config['pathTemplate'];
@@ -250,7 +256,12 @@ class PathBuilder implements PathBuilderInterface
             '{model}' => $file->model(),
             '{collection}' => $file->collection(),
             '{id}' => $file->uuid(),
-            '{randomPath}' => $this->randomPath($file->uuid(), $randomPathLevels),
+            '{randomPath}' => $this->randomPath(
+                $file->uuid(),
+                $randomPathLevels,
+                $config['randomPath'],
+                $ds,
+            ),
             '{modelId}' => $file->modelId(),
             '{strippedId}' => str_replace('-', '', $file->uuid()),
             '{extension}' => $file->extension(),

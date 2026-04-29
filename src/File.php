@@ -15,6 +15,7 @@
 namespace PhpCollective\Infrastructure\Storage;
 
 use PhpCollective\Infrastructure\Storage\Exception\InvalidStreamResourceException;
+use PhpCollective\Infrastructure\Storage\Exception\MissingUuidException;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
 use PhpCollective\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException;
 use PhpCollective\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface;
@@ -395,10 +396,16 @@ class File implements FileInterface
     }
 
     /**
+     * @throws \PhpCollective\Infrastructure\Storage\Exception\MissingUuidException
+     *
      * @return string
      */
     public function uuid(): string
     {
+        if (!isset($this->uuid)) {
+            throw MissingUuidException::create();
+        }
+
         return $this->uuid;
     }
 
@@ -673,7 +680,7 @@ class File implements FileInterface
     public function toArray(): array
     {
         return [
-            'uuid' => $this->uuid,
+            'uuid' => $this->uuid(),
             'filename' => $this->filename,
             'filesize' => $this->filesize,
             'mimeType' => $this->mimeType,

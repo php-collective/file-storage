@@ -36,6 +36,8 @@ The file object implements `withResource()` and `withFile()`. The second takes a
 
 When you store a file for the first time in your storage backend, you **must** add a resource to the file object. If you don't do that, you'll get an exception from the file storage service.
 
+The same applies to the UUID when you use the built-in `File` object together with serialization or the default `PathBuilder`: call `withUuid()` before persisting or generating paths.
+
 ## Dependencies
 
 We think there is a need to explain why we have picked the dependencies we have, because we try to keep dependencies low. However, there are some cases that make sense to use existing libraries.
