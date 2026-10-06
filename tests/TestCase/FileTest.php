@@ -108,6 +108,7 @@ class FileTest extends TestCase
             'mimeType' => 'image/jpeg',
             'extension' => 'jpg',
             'path' => '/test/path/file.jpg',
+            'hash' => null,
             'model' => 'User',
             'modelId' => '1',
             'collection' => 'avatar',
@@ -170,5 +171,20 @@ class FileTest extends TestCase
         $this->expectException(MissingUuidException::class);
         $this->expectExceptionMessage('UUID has not been set');
         $file->buildPath(new PathBuilder());
+    }
+
+    /**
+     * @return void
+     */
+    public function testWithHash(): void
+    {
+        $file = File::create('foobar.jpg', 123, 'image/jpeg', 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973');
+        $hashed = $file->withHash('abc123');
+
+        $this->assertNull($file->hash());
+        $this->assertNull($file->toArray()['hash']);
+        $this->assertSame('abc123', $hashed->hash());
+        $this->assertSame('abc123', $hashed->toArray()['hash']);
     }
 }

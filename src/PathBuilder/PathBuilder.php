@@ -43,6 +43,7 @@ class PathBuilder implements PathBuilderInterface
         'filenameSanitizer' => null,
         'pathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{extension}',
         'variantPathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{hashedVariant}.{extension}',
+        'hashPathTemplate' => 'blobs{ds}{hashPath}{ds}{hash}.{extension}',
         'dateFormat' => [
             'year' => 'Y',
             'month' => 'm',
@@ -71,6 +72,8 @@ class PathBuilder implements PathBuilderInterface
     public function __construct(array $config = [])
     {
         $this->config = $config + $this->defaultConfig;
+
+        $this->assertHashPathTemplate((string)$this->config['hashPathTemplate']);
 
         $this->filenameSanitizer = $this->config['filenameSanitizer'] instanceof FilenameSanitizerInterface
             ? $this->config['filenameSanitizer']
@@ -111,6 +114,35 @@ class PathBuilder implements PathBuilderInterface
         $this->config['variantPathTemplate'] = $template;
 
         return $this;
+    }
+
+    /**
+     * @param string $template Template string, must contain `{hash}`
+     *
+     * @return $this
+     */
+    public function setHashPathTemplate(string $template)
+    {
+        $this->assertHashPathTemplate($template);
+        $this->config['hashPathTemplate'] = $template;
+
+        return $this;
+    }
+
+    /**
+     * Without `{hash}` every hashed file would resolve to the same path.
+     *
+     * @param string $template Template string
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return void
+     */
+    protected function assertHashPathTemplate(string $template): void
+    {
+        if (!str_contains($template, '{hash}')) {
+            throw new InvalidArgumentException('The `hashPathTemplate` must contain the `{hash}` placeholder.');
+        }
     }
 
     /**
@@ -247,7 +279,15 @@ class PathBuilder implements PathBuilderInterface
         $ds = $config['directorySeparator'];
         $filename = $this->filename($file, $options);
         $hashedVariant = substr(hash('sha1', (string)$variant), 0, 6);
-        $template = $variant ? $config['variantPathTemplate'] : $config['pathTemplate'];
+        $hash = $this->contentHash($file);
+        $template = $config['pathTemplate'];
+        if ($variant) {
+            $template = $config['variantPathTemplate'];
+        } elseif ($hash !== '') {
+            $template = (string)$config['hashPathTemplate'];
+            // Per-call options can replace the template validated in the constructor.
+            $this->assertHashPathTemplate($template);
+        }
         $dateTime = $this->getDateObject();
         $randomPathLevels = (int)$config['randomPathLevels'] ?: 3;
 
@@ -270,6 +310,8 @@ class PathBuilder implements PathBuilderInterface
             '{hashedFilename}' => sha1($filename),
             '{variant}' => $variant,
             '{hashedVariant}' => $hashedVariant,
+            '{hash}' => $hash,
+            '{hashPath}' => $this->hashPath($hash, $randomPathLevels, $ds),
             '{year}' => $dateTime->format($config['dateFormat']['year']),
             '{month}' => $dateTime->format($config['dateFormat']['month']),
             '{day}' => $dateTime->format($config['dateFormat']['day']),
@@ -286,6 +328,40 @@ class PathBuilder implements PathBuilderInterface
         }
 
         return $result;
+    }
+
+    /**
+     * FileInterface declares hash() by annotation only, so an implementation
+     * may lack it.
+     *
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
+     *
+     * @return string
+     */
+    protected function contentHash(FileInterface $file): string
+    {
+        // @phpstan-ignore function.alreadyNarrowedType (annotated on the interface, not enforced)
+        if (!method_exists($file, 'hash')) {
+            return '';
+        }
+
+        return (string)$file->hash();
+    }
+
+    /**
+     * @param string $hash Content hash
+     * @param int $levels Depth of the path to generate.
+     * @param string $separator Directory separator to use.
+     *
+     * @return string
+     */
+    protected function hashPath(string $hash, int $levels, string $separator): string
+    {
+        if ($hash === '') {
+            return '';
+        }
+
+        return implode($separator, array_slice(str_split($hash, 2), 0, $levels));
     }
 
     /**

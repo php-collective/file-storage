@@ -20,6 +20,13 @@ use PhpCollective\Infrastructure\Storage\UrlBuilder\UrlBuilderInterface;
 
 /**
  * File Interface
+ *
+ * The content hash accessors are declared by annotation only until 2.0, so
+ * existing implementations keep working. Check with method_exists() before
+ * calling them on a foreign implementation.
+ *
+ * @method string|null hash()
+ * @method static withHash(string $hash)
  */
 interface FileInterface extends JsonSerializable
 {

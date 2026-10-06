@@ -16,7 +16,9 @@ namespace PhpCollective\Test\TestCase\PathBuilder;
 
 use DateTime;
 use DateTimeInterface;
+use InvalidArgumentException;
 use PhpCollective\Infrastructure\Storage\FileFactory;
+use PhpCollective\Infrastructure\Storage\FileInterface;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
 use PhpCollective\Infrastructure\Storage\Processor\Image\ImageVariantCollection;
 use PhpCollective\Infrastructure\Storage\Utility\NoopFilenameSanitizer;
@@ -162,5 +164,126 @@ class PathBuilderTest extends TestCase
             $this->sanitizeSeparator('User\fe\c3\b4\914e151291534253a81e7ee2edc1d973\titus.7ae239.jpg'),
             $result,
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function testHashedFileUsesHashPathTemplate(): void
+    {
+        $hash = hash('sha256', 'content');
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->belongsToModel('User', '1')
+            ->withHash($hash);
+
+        $builder = new PathBuilder(['directorySeparator' => '/']);
+
+        $this->assertSame('blobs/ed/70/02/' . $hash . '.jpg', $builder->path($file));
+    }
+
+    /**
+     * @return void
+     */
+    public function testVariantOfHashedFileKeepsUuidBasedPath(): void
+    {
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->belongsToModel('User', '1')
+            ->withHash(hash('sha256', 'content'));
+
+        $builder = new PathBuilder(['directorySeparator' => '/']);
+
+        $this->assertSame(
+            'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/titus.7ae239.jpg',
+            $builder->pathForVariant($file, 'resizeAndFlip'),
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testCustomHashPathTemplate(): void
+    {
+        $hash = hash('sha256', 'content');
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->withHash($hash);
+
+        $builder = new PathBuilder([
+            'directorySeparator' => '/',
+            'randomPathLevels' => 1,
+            'hashPathTemplate' => 'shared{ds}{hashPath}{ds}{hash}',
+        ]);
+
+        $this->assertSame('shared/ed/' . $hash, $builder->path($file));
+    }
+
+    /**
+     * @return void
+     */
+    public function testHashPlaceholdersAreEmptyWithoutHash(): void
+    {
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973');
+
+        $builder = new PathBuilder([
+            'directorySeparator' => '/',
+            'pathTemplate' => 'files{ds}{hashPath}{ds}{hash}{ds}{filename}.{extension}',
+        ]);
+
+        $this->assertSame('files/titus.jpg', $builder->path($file));
+    }
+
+    /**
+     * @return void
+     */
+    public function testFileImplementationWithoutHashMethodIsUnhashed(): void
+    {
+        $file = $this->createConfiguredMock(FileInterface::class, [
+            'uuid' => '914e1512-9153-4253-a81e-7ee2edc1d973',
+            'filename' => 'titus.jpg',
+            'extension' => 'jpg',
+            'model' => 'User',
+        ]);
+
+        $builder = new PathBuilder(['directorySeparator' => '/']);
+
+        $this->assertSame('User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/titus.jpg', $builder->path($file));
+    }
+
+    /**
+     * @return void
+     */
+    public function testHashPathTemplateWithoutHashPlaceholderThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must contain the `{hash}` placeholder');
+
+        new PathBuilder(['hashPathTemplate' => 'blobs{ds}{filename}']);
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetHashPathTemplateWithoutHashPlaceholderThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        (new PathBuilder())->setHashPathTemplate('blobs{ds}{filename}');
+    }
+
+    /**
+     * @return void
+     */
+    public function testHashPathTemplateOptionWithoutHashPlaceholderThrows(): void
+    {
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->withHash(hash('sha256', 'content'));
+
+        $this->expectException(InvalidArgumentException::class);
+
+        (new PathBuilder())->path($file, ['hashPathTemplate' => 'blobs{ds}{extension}']);
     }
 }

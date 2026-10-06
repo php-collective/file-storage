@@ -64,6 +64,11 @@ class File implements FileInterface
     /**
      * @var string|null
      */
+    protected ?string $hash = null;
+
+    /**
+     * @var string|null
+     */
     protected ?string $collection = null;
 
     /**
@@ -675,6 +680,32 @@ class File implements FileInterface
     }
 
     /**
+     * Content hash of the file, if one was set.
+     *
+     * @return string|null
+     */
+    public function hash(): ?string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * A file with a content hash is stored under the path builder's hash
+     * template instead of its uuid based one.
+     *
+     * @param string $hash Content hash
+     *
+     * @return static
+     */
+    public function withHash(string $hash): static
+    {
+        $that = clone $this;
+        $that->hash = $hash;
+
+        return $that;
+    }
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -686,6 +717,7 @@ class File implements FileInterface
             'mimeType' => $this->mimeType,
             'extension' => $this->extension,
             'path' => $this->path,
+            'hash' => $this->hash,
             'model' => $this->model,
             'modelId' => $this->modelId,
             'collection' => $this->collection,

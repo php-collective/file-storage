@@ -23,6 +23,8 @@ $builder = new PathBuilder([
  * **filenameSanitizer**: null|\PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface
  * **pathTemplate**: '{model}{ds}{randomPath}{ds}{id}'
  * **variantPathTemplate**: '{filename}.{variant}.{extension}'
+ * **hashPathTemplate**: 'blobs{ds}{hashPath}{ds}{hash}.{extension}'
+   * Used instead of `pathTemplate` for a file that carries a content hash. Must contain `{hash}`.
  * **dateFormat**: Array of [DateTimeInterface::format()](https://www.php.net/manual/en/datetime.format.php) compatible values
    * **year**: 'Y'
    * **month**: 'm'
@@ -56,11 +58,28 @@ For example this template string
  * **{hour}**: Two digits hour value
  * **{minute}**: Two digits minute value
  * **{date}**: Custom date format i.e. '2020-01-03'
+ * **{hash}**: The content hash of the file. Empty if the file has none.
+ * **{hashPath}**: Directory levels cut from the content hash, two characters per level, `randomPathLevels` deep. Empty if the file has none.
 
 The following placeholders are only valid when used in a path for a manipulated file.
 
  * **{variant}**: The name of the variant
  * **{hashedVariant}**: A hashed and to six chars truncated version of the manipulation name.
+
+### Content addressed paths
+
+A file that carries a content hash (`$file->withHash($hash)`) is stored under `hashPathTemplate` instead of `pathTemplate`. The default template contains neither the model nor the UUID, so two files with the same hash and extension resolve to the same path:
+
+```php
+$file = $file->withHash(hash_file('sha256', $pathToFile));
+
+$builder->path($file);
+// blobs/ed/70/02/ed7002b439e9ac845f22357d822bac1444730fbdb6016d3ec9432297b9ec9f73.jpg
+```
+
+Variant paths are not affected. They are still built from `variantPathTemplate`.
+
+The library only builds the path. Deciding when a shared file may be removed is up to the application, because `FileStorage::remove()` deletes the file at that path.
 
 ### Filename sanitization
 
