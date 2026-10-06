@@ -131,7 +131,8 @@ class PathBuilder implements PathBuilderInterface
     }
 
     /**
-     * Without `{hash}` every hashed file would resolve to the same path.
+     * A hash template has to name files by their content. Without `{hash}` two
+     * files with different content could be given the same path.
      *
      * @param string $template Template string
      *
@@ -282,7 +283,7 @@ class PathBuilder implements PathBuilderInterface
         $hashedVariant = substr(hash('sha1', (string)$variant), 0, 6);
         $hash = $this->contentHash($file);
         $template = $config['pathTemplate'];
-        if ($variant) {
+        if ($variant !== null) {
             $template = $config['variantPathTemplate'];
         } elseif ($hash !== '') {
             $template = (string)$config['hashPathTemplate'];
@@ -334,6 +335,8 @@ class PathBuilder implements PathBuilderInterface
     /**
      * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
      *
+     * @throws \InvalidArgumentException
+     *
      * @return string
      */
     protected function contentHash(FileInterface $file): string
@@ -342,7 +345,13 @@ class PathBuilder implements PathBuilderInterface
             return '';
         }
 
-        return (string)$file->hash();
+        $hash = (string)$file->hash();
+        // The hash ends up in the path, so it must not carry separators or dot segments.
+        if ($hash !== '' && !ctype_xdigit($hash)) {
+            throw new InvalidArgumentException('The content hash must be a hexadecimal digest.');
+        }
+
+        return $hash;
     }
 
     /**

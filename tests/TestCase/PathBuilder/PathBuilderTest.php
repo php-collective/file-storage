@@ -286,4 +286,36 @@ class PathBuilderTest extends TestCase
 
         (new PathBuilder())->path($file, ['hashPathTemplate' => 'blobs{ds}{extension}']);
     }
+
+    /**
+     * @return void
+     */
+    public function testNonHexadecimalHashIsRejected(): void
+    {
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->withHash('../outside');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must be a hexadecimal digest');
+
+        (new PathBuilder())->path($file);
+    }
+
+    /**
+     * @return void
+     */
+    public function testFalsyVariantNameOfHashedFileUsesVariantTemplate(): void
+    {
+        $hash = hash('sha256', 'content');
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->belongsToModel('User', '1')
+            ->withHash($hash);
+
+        $builder = new PathBuilder(['directorySeparator' => '/']);
+
+        $this->assertStringNotContainsString($hash, $builder->pathForVariant($file, '0'));
+        $this->assertStringStartsWith('User/', $builder->pathForVariant($file, '0'));
+    }
 }

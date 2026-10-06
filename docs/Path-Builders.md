@@ -58,7 +58,7 @@ For example this template string
  * **{hour}**: Two digits hour value
  * **{minute}**: Two digits minute value
  * **{date}**: Custom date format i.e. '2020-01-03'
- * **{hash}**: The content hash of the file. Empty if the file has none.
+ * **{hash}**: The content hash of the file. Empty if the file has none. Must be a hexadecimal digest; anything else throws.
  * **{hashPath}**: Directory levels cut from the content hash, two characters per level, `randomPathLevels` deep. Empty if the file has none.
 
 The following placeholders are only valid when used in a path for a manipulated file.
