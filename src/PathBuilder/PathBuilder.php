@@ -17,6 +17,7 @@ namespace PhpCollective\Infrastructure\Storage\PathBuilder;
 use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
+use PhpCollective\Infrastructure\Storage\ContentHashInterface;
 use PhpCollective\Infrastructure\Storage\FileInterface;
 use PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizer;
 use PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface;
@@ -331,17 +332,13 @@ class PathBuilder implements PathBuilderInterface
     }
 
     /**
-     * FileInterface declares hash() by annotation only, so an implementation
-     * may lack it.
-     *
      * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
      *
      * @return string
      */
     protected function contentHash(FileInterface $file): string
     {
-        // @phpstan-ignore function.alreadyNarrowedType (annotated on the interface, not enforced)
-        if (!method_exists($file, 'hash')) {
+        if (!$file instanceof ContentHashInterface) {
             return '';
         }
 

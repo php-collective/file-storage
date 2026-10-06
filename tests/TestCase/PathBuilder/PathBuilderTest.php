@@ -238,7 +238,7 @@ class PathBuilderTest extends TestCase
     /**
      * @return void
      */
-    public function testFileImplementationWithoutHashMethodIsUnhashed(): void
+    public function testFileWithoutContentHashInterfaceIsUnhashed(): void
     {
         $file = $this->createConfiguredMock(FileInterface::class, [
             'uuid' => '914e1512-9153-4253-a81e-7ee2edc1d973',

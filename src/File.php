@@ -24,7 +24,7 @@ use RuntimeException;
 /**
  * File
  */
-class File implements FileInterface
+class File implements FileInterface, ContentHashInterface
 {
     /**
      * @var int
@@ -680,9 +680,7 @@ class File implements FileInterface
     }
 
     /**
-     * Content hash of the file, if one was set.
-     *
-     * @return string|null
+     * @inheritDoc
      */
     public function hash(): ?string
     {

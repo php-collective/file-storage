@@ -117,7 +117,7 @@ $file->hash();
 
 The default path builder stores a file with a hash under a [content addressed path](Path-Builders.md#content-addressed-paths).
 
-`FileInterface` declares `hash()` and `withHash()` by annotation only until 2.0. If you work with a custom implementation of the interface, check with `method_exists()` before calling them.
+`hash()` and `withHash()` belong to `ContentHashInterface`, which the built-in `File` implements. A custom `FileInterface` implementation does not have to; check with `instanceof ContentHashInterface` before calling them on a file object you did not create.
 
 ## Extending functionality
 
