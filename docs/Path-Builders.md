@@ -21,8 +21,8 @@ $builder = new PathBuilder([
  * **sanitizeFilename**: true
  * **beautifyFilename**: false
  * **filenameSanitizer**: null|\PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface
- * **normalizeExtension**: true
-   * Lowercases `{extension}` and removes everything but letters and digits. See [Extension normalization](#extension-normalization).
+ * **lowercaseExtension**: false
+   * Lowercases `{extension}` in `pathTemplate` and `variantPathTemplate`. See [The extension in paths](#the-extension-in-paths).
  * **pathTemplate**: '{model}{ds}{randomPath}{ds}{id}'
  * **variantPathTemplate**: '{filename}.{variant}.{extension}'
  * **hashPathTemplate**: 'blobs{ds}{hashPath}{ds}{hash}.{extension}'
@@ -68,19 +68,28 @@ The following placeholders are only valid when used in a path for a manipulated 
  * **{variant}**: The name of the variant
  * **{hashedVariant}**: A hashed and to six chars truncated version of the manipulation name.
 
-### Extension normalization
+### The extension in paths
 
-The extension comes from the name the file was uploaded under. By default the path builder lowercases it and removes every character that is not a letter or a digit, in all three templates. `photo.JPG` and `photo.jpg` then end in `.jpg`, and two files with the same content hash share one path whichever spelling they were uploaded with.
+The extension comes from the name the file was uploaded under. Two things happen to it on the way into a path.
 
-`File::extension()` still returns the extension as uploaded. Only the path changes.
+Characters other than letters and digits are always removed. `report.pd f!` ends in `.pdf`, and an extension made up of other characters only is dropped.
 
-Changed in 1.1: before, the extension went into the path as it was. Paths that are already stored are not affected, because they are read from where you persisted them. Paths that are built again for a file uploaded earlier are: a variant regenerated for `photo.JPG` is now written to a `.jpg` path next to the old `.JPG` variant. To keep the previous behavior:
+Case depends on the template:
+
+- `hashPathTemplate` always uses the lower case extension, so two files with the same content hash share one path whichever spelling they were uploaded with.
+- `pathTemplate` and `variantPathTemplate` keep the case as uploaded. Set `lowercaseExtension` to `true` to lowercase there as well:
 
 ```php
 $builder = new PathBuilder([
-    'normalizeExtension' => false,
+    'lowercaseExtension' => true,
 ]);
 ```
+
+`File::extension()` still returns the extension as uploaded. Only the path changes.
+
+Switching `lowercaseExtension` on affects files stored before: their stored paths keep working, but a path that is built again, a regenerated variant of `photo.JPG` for example, is then written to a `.jpg` path next to the old `.JPG` one.
+
+Changed in 1.1: characters other than letters and digits used to go into the path as they were. A file stored earlier under such an extension keeps its stored path; a path built again for it no longer contains those characters.
 
 ### Content addressed paths
 

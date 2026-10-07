@@ -42,7 +42,7 @@ class PathBuilder implements PathBuilderInterface
         'sanitizeFilename' => true,
         'beautifyFilename' => false,
         'filenameSanitizer' => null,
-        'normalizeExtension' => true,
+        'lowercaseExtension' => false,
         'pathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{extension}',
         'variantPathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{hashedVariant}.{extension}',
         'hashPathTemplate' => 'blobs{ds}{hashPath}{ds}{hash}.{extension}',
@@ -284,12 +284,15 @@ class PathBuilder implements PathBuilderInterface
         $hashedVariant = substr(hash('sha1', (string)$variant), 0, 6);
         $hash = $this->contentHash($file);
         $template = $config['pathTemplate'];
+        $lowercaseExtension = (bool)$config['lowercaseExtension'];
         if ($variant !== null) {
             $template = $config['variantPathTemplate'];
         } elseif ($hash !== '') {
             $template = (string)$config['hashPathTemplate'];
             // Per-call options can replace the template validated in the constructor.
             $this->assertHashPathTemplate($template);
+            // A content addressed path needs one spelling per extension.
+            $lowercaseExtension = true;
         }
         $dateTime = $this->getDateObject();
         $randomPathLevels = (int)$config['randomPathLevels'] ?: 3;
@@ -307,7 +310,7 @@ class PathBuilder implements PathBuilderInterface
             ),
             '{modelId}' => $file->modelId(),
             '{strippedId}' => str_replace('-', '', $file->uuid()),
-            '{extension}' => $this->extension($file, (bool)$config['normalizeExtension']),
+            '{extension}' => $this->extension($file, $lowercaseExtension),
             '{mimeType}' => $file->mimeType(),
             '{filename}' => $filename,
             '{hashedFilename}' => sha1($filename),
@@ -360,22 +363,20 @@ class PathBuilder implements PathBuilderInterface
     }
 
     /**
-     * The extension is taken from the uploaded filename. Normalized, `JPG` and
-     * `jpg` resolve to one path and nothing but letters and digits gets into it.
+     * The extension is taken from the uploaded filename, so only letters and
+     * digits are let into the path. Lowercasing is separate, because it changes
+     * the path of files that were stored with an upper case extension.
      *
      * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
-     * @param bool $normalize
+     * @param bool $lowercase
      *
      * @return string
      */
-    protected function extension(FileInterface $file, bool $normalize): string
+    protected function extension(FileInterface $file, bool $lowercase): string
     {
-        $extension = (string)$file->extension();
-        if (!$normalize) {
-            return $extension;
-        }
+        $extension = (string)preg_replace('/[^A-Za-z0-9]/', '', (string)$file->extension());
 
-        return (string)preg_replace('/[^a-z0-9]/', '', strtolower($extension));
+        return $lowercase ? strtolower($extension) : $extension;
     }
 
     /**

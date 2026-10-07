@@ -352,28 +352,29 @@ class PathBuilderTest extends TestCase
     public static function extensionProvider(): array
     {
         return [
-            'upper case' => ['photo.JPG', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
-            'other characters' => ['photo.j p-g!', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
-            'nothing left' => ['photo.???', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo'],
-            'opted out' => ['photo.JPG', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.JPG'],
+            'case kept by default' => ['photo.JPG', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.JPG'],
+            'lowercased on request' => ['photo.JPG', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
+            'other characters always removed' => ['photo.J p-G!', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.JpG'],
+            'other characters removed and lowercased' => ['photo.J p-G!', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
+            'nothing left' => ['photo.???', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo'],
         ];
     }
 
     /**
      * @param string $filename
-     * @param bool $normalize
+     * @param bool $lowercase
      * @param string $expected
      *
      * @return void
      */
     #[DataProvider('extensionProvider')]
-    public function testExtensionNormalization(string $filename, bool $normalize, string $expected): void
+    public function testExtensionInPath(string $filename, bool $lowercase, string $expected): void
     {
         $file = File::create($filename, 1, 'image/jpeg', 'local')
             ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
             ->belongsToModel('User', '1');
 
-        $builder = new PathBuilder(['directorySeparator' => '/', 'normalizeExtension' => $normalize]);
+        $builder = new PathBuilder(['directorySeparator' => '/', 'lowercaseExtension' => $lowercase]);
 
         $this->assertSame($expected, $builder->path($file));
     }
@@ -394,14 +395,16 @@ class PathBuilderTest extends TestCase
     /**
      * @return void
      */
-    public function testVariantPathUsesNormalizedExtension(): void
+    public function testVariantPathKeepsExtensionCaseByDefault(): void
     {
         $file = File::create('photo.JPG', 1, 'image/jpeg', 'local')
             ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
-            ->belongsToModel('User', '1');
+            ->belongsToModel('User', '1')
+            ->withHash(hash('sha256', 'content'));
 
         $builder = new PathBuilder(['directorySeparator' => '/']);
 
-        $this->assertStringEndsWith('.jpg', $builder->pathForVariant($file, 'thumb'));
+        $this->assertStringEndsWith('.JPG', $builder->pathForVariant($file, 'thumb'));
+        $this->assertStringEndsWith('.jpg', $builder->path($file));
     }
 }

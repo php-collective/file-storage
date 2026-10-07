@@ -64,4 +64,39 @@ class FileStorageTest extends TestCase
 
         $file = $fileStorage->remove($file);
     }
+
+    /**
+     * @return void
+     */
+    public function testBuildPathMatchesStoreWithoutWriting(): void
+    {
+        $root = $this->storageRoot . DIRECTORY_SEPARATOR . 'storage2' . DIRECTORY_SEPARATOR;
+        $storageService = new StorageService(new StorageAdapterFactory());
+        $storageService->setAdapterConfigFromArray([
+            'local' => ['class' => LocalFactory::class, 'options' => ['root' => $root]],
+        ]);
+        $fileStorage = new FileStorage($storageService, new PathBuilder());
+
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->belongsToModel('User', '1');
+
+        $path = $fileStorage->buildPath($file)->path();
+
+        $this->assertFileDoesNotExist($root . $path);
+        $this->assertSame($path, $fileStorage->store($file)->path());
+
+        $fileStorage->remove($fileStorage->buildPath($file));
+    }
+
+    /**
+     * @return void
+     */
+    public function testBuildPathWithoutPathBuilderReturnsFileUnchanged(): void
+    {
+        $fileStorage = new FileStorage(new StorageService(new StorageAdapterFactory()));
+        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')->withPath('given/path.jpg');
+
+        $this->assertSame('given/path.jpg', $fileStorage->buildPath($file)->path());
+    }
 }
