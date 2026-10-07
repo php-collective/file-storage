@@ -17,6 +17,7 @@ namespace PhpCollective\Infrastructure\Storage\PathBuilder;
 use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
+use PhpCollective\Infrastructure\Storage\ContentHashInterface;
 use PhpCollective\Infrastructure\Storage\FileInterface;
 use PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizer;
 use PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface;
@@ -41,8 +42,10 @@ class PathBuilder implements PathBuilderInterface
         'sanitizeFilename' => true,
         'beautifyFilename' => false,
         'filenameSanitizer' => null,
+        'lowercaseExtension' => false,
         'pathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{extension}',
         'variantPathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{hashedVariant}.{extension}',
+        'hashPathTemplate' => 'blobs{ds}{hashPath}{ds}{hash}.{extension}',
         'dateFormat' => [
             'year' => 'Y',
             'month' => 'm',
@@ -71,6 +74,8 @@ class PathBuilder implements PathBuilderInterface
     public function __construct(array $config = [])
     {
         $this->config = $config + $this->defaultConfig;
+
+        $this->assertHashPathTemplate((string)$this->config['hashPathTemplate']);
 
         $this->filenameSanitizer = $this->config['filenameSanitizer'] instanceof FilenameSanitizerInterface
             ? $this->config['filenameSanitizer']
@@ -111,6 +116,36 @@ class PathBuilder implements PathBuilderInterface
         $this->config['variantPathTemplate'] = $template;
 
         return $this;
+    }
+
+    /**
+     * @param string $template Template string, must contain `{hash}`
+     *
+     * @return $this
+     */
+    public function setHashPathTemplate(string $template)
+    {
+        $this->assertHashPathTemplate($template);
+        $this->config['hashPathTemplate'] = $template;
+
+        return $this;
+    }
+
+    /**
+     * A hash template has to name files by their content. Without `{hash}` two
+     * files with different content could be given the same path.
+     *
+     * @param string $template Template string
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return void
+     */
+    protected function assertHashPathTemplate(string $template): void
+    {
+        if (!str_contains($template, '{hash}')) {
+            throw new InvalidArgumentException('The `hashPathTemplate` must contain the `{hash}` placeholder.');
+        }
     }
 
     /**
@@ -247,7 +282,18 @@ class PathBuilder implements PathBuilderInterface
         $ds = $config['directorySeparator'];
         $filename = $this->filename($file, $options);
         $hashedVariant = substr(hash('sha1', (string)$variant), 0, 6);
-        $template = $variant ? $config['variantPathTemplate'] : $config['pathTemplate'];
+        $hash = $this->contentHash($file);
+        $template = $config['pathTemplate'];
+        $lowercaseExtension = (bool)$config['lowercaseExtension'];
+        if ($variant !== null) {
+            $template = $config['variantPathTemplate'];
+        } elseif ($hash !== '') {
+            $template = (string)$config['hashPathTemplate'];
+            // Per-call options can replace the template validated in the constructor.
+            $this->assertHashPathTemplate($template);
+            // A content addressed path needs one spelling per extension.
+            $lowercaseExtension = true;
+        }
         $dateTime = $this->getDateObject();
         $randomPathLevels = (int)$config['randomPathLevels'] ?: 3;
 
@@ -264,12 +310,14 @@ class PathBuilder implements PathBuilderInterface
             ),
             '{modelId}' => $file->modelId(),
             '{strippedId}' => str_replace('-', '', $file->uuid()),
-            '{extension}' => $file->extension(),
+            '{extension}' => $this->extension($file, $lowercaseExtension),
             '{mimeType}' => $file->mimeType(),
             '{filename}' => $filename,
             '{hashedFilename}' => sha1($filename),
             '{variant}' => $variant,
             '{hashedVariant}' => $hashedVariant,
+            '{hash}' => $hash,
+            '{hashPath}' => $this->hashPath($hash, $randomPathLevels, $ds),
             '{year}' => $dateTime->format($config['dateFormat']['year']),
             '{month}' => $dateTime->format($config['dateFormat']['month']),
             '{day}' => $dateTime->format($config['dateFormat']['day']),
@@ -286,6 +334,65 @@ class PathBuilder implements PathBuilderInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string
+     */
+    protected function contentHash(FileInterface $file): string
+    {
+        if (!$file instanceof ContentHashInterface) {
+            return '';
+        }
+
+        $hash = (string)$file->hash();
+        if ($hash === '') {
+            return '';
+        }
+        // The hash ends up in the path, so it must not carry separators or dot segments.
+        if (preg_match('/^[a-f0-9]+$/iD', $hash) !== 1) {
+            throw new InvalidArgumentException('The content hash must be a hexadecimal digest.');
+        }
+
+        // One spelling per digest, or the same content gets two paths.
+        return strtolower($hash);
+    }
+
+    /**
+     * The extension is taken from the uploaded filename, so only letters and
+     * digits are let into the path. Lowercasing is separate, because it changes
+     * the path of files that were stored with an upper case extension.
+     *
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
+     * @param bool $lowercase
+     *
+     * @return string
+     */
+    protected function extension(FileInterface $file, bool $lowercase): string
+    {
+        $extension = (string)preg_replace('/[^A-Za-z0-9]/', '', (string)$file->extension());
+
+        return $lowercase ? strtolower($extension) : $extension;
+    }
+
+    /**
+     * @param string $hash Content hash
+     * @param int $levels Depth of the path to generate.
+     * @param string $separator Directory separator to use.
+     *
+     * @return string
+     */
+    protected function hashPath(string $hash, int $levels, string $separator): string
+    {
+        if ($hash === '') {
+            return '';
+        }
+
+        return implode($separator, array_slice(str_split($hash, 2), 0, $levels));
     }
 
     /**

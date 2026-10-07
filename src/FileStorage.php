@@ -120,6 +120,24 @@ class FileStorage implements FileStorageInterface
     }
 
     /**
+     * The path store() would write the file to, without writing anything.
+     *
+     * Callbacks registered for `beforeSave` are not applied.
+     *
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file File
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface
+     */
+    public function buildPath(FileInterface $file): FileInterface
+    {
+        if ($this->pathBuilder === null) {
+            return $file;
+        }
+
+        return $file->buildPath($this->pathBuilder);
+    }
+
+    /**
      * @inheritDoc
      *
      * @throws \RuntimeException

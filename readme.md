@@ -20,6 +20,7 @@ This library is pretty much the same as these plugins for [Laravel](https://gith
  * Framework-agnostic
  * Image processing (optional feature / dependency)
  * Image optimization (optional feature / dependency)
+ * Content addressed paths: files with the same content hash can share one stored file, see [Path Builders](docs/Path-Builders.md#content-addressed-paths)
  * Provides factories for the adapters
  * As lite as possible on dependencies
 

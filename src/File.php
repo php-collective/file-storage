@@ -14,6 +14,7 @@
 
 namespace PhpCollective\Infrastructure\Storage;
 
+use InvalidArgumentException;
 use PhpCollective\Infrastructure\Storage\Exception\InvalidStreamResourceException;
 use PhpCollective\Infrastructure\Storage\Exception\MissingUuidException;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
@@ -24,7 +25,7 @@ use RuntimeException;
 /**
  * File
  */
-class File implements FileInterface
+class File implements FileInterface, ContentHashInterface
 {
     /**
      * @var int
@@ -60,6 +61,11 @@ class File implements FileInterface
      * @var string|null
      */
     protected ?string $path = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $hash = null;
 
     /**
      * @var string|null
@@ -675,6 +681,36 @@ class File implements FileInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function hash(): ?string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * A file with a content hash is stored under the path builder's hash
+     * template instead of its uuid based one.
+     *
+     * @param string $hash Hexadecimal digest of the content, stored in lower case
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return static
+     */
+    public function withHash(string $hash): static
+    {
+        if (preg_match('/^[a-f0-9]+$/iD', $hash) !== 1) {
+            throw new InvalidArgumentException('The content hash must be a hexadecimal digest.');
+        }
+
+        $that = clone $this;
+        $that->hash = strtolower($hash);
+
+        return $that;
+    }
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -686,6 +722,7 @@ class File implements FileInterface
             'mimeType' => $this->mimeType,
             'extension' => $this->extension,
             'path' => $this->path,
+            'hash' => $this->hash,
             'model' => $this->model,
             'modelId' => $this->modelId,
             'collection' => $this->collection,

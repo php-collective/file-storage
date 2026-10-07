@@ -41,6 +41,14 @@ $file = FileFactory::fromDisk('./tests/Fixtures/titus.jpg', 'local')
 $file = $fileStorage->store($file);
 ```
 
+## Getting the path without storing
+
+`buildPath()` returns the file object with the path `store()` would write to, and writes nothing. Callbacks registered for `beforeSave` are not applied, so a callback that changes the path is not reflected.
+
+```php
+$path = $fileStorage->buildPath($file)->path();
+```
+
 ## Removing a file
 
 ```php

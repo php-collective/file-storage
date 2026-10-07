@@ -14,6 +14,7 @@
 
 namespace PhpCollective\Test\TestCase;
 
+use InvalidArgumentException;
 use PhpCollective\Infrastructure\Storage\Exception\MissingUuidException;
 use PhpCollective\Infrastructure\Storage\File;
 use PhpCollective\Infrastructure\Storage\FileFactory;
@@ -21,6 +22,7 @@ use PhpCollective\Infrastructure\Storage\FileInterface;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
 use PhpCollective\Infrastructure\Storage\Utility\MimeType;
 use PhpCollective\Infrastructure\Storage\Utility\PathInfo;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
@@ -108,6 +110,7 @@ class FileTest extends TestCase
             'mimeType' => 'image/jpeg',
             'extension' => 'jpg',
             'path' => '/test/path/file.jpg',
+            'hash' => null,
             'model' => 'User',
             'modelId' => '1',
             'collection' => 'avatar',
@@ -170,5 +173,60 @@ class FileTest extends TestCase
         $this->expectException(MissingUuidException::class);
         $this->expectExceptionMessage('UUID has not been set');
         $file->buildPath(new PathBuilder());
+    }
+
+    /**
+     * @return void
+     */
+    public function testWithHash(): void
+    {
+        $file = File::create('foobar.jpg', 123, 'image/jpeg', 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973');
+        $hashed = $file->withHash('abc123');
+
+        $this->assertNull($file->hash());
+        $this->assertNull($file->toArray()['hash']);
+        $this->assertSame('abc123', $hashed->hash());
+        $this->assertSame('abc123', $hashed->toArray()['hash']);
+    }
+
+    /**
+     * @return void
+     */
+    public function testWithHashStoresLowerCase(): void
+    {
+        $file = File::create('foobar.jpg', 123, 'image/jpeg', 'local')->withHash('ABCDEF12');
+
+        $this->assertSame('abcdef12', $file->hash());
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function invalidHashProvider(): array
+    {
+        return [
+            'empty' => [''],
+            'dot segments' => ['../outside'],
+            'separator' => ['ab/cd'],
+            'not hexadecimal' => ['xyz'],
+            'trailing newline' => ["abc\n"],
+        ];
+    }
+
+    /**
+     * @param string $hash
+     *
+     * @return void
+     */
+    #[DataProvider('invalidHashProvider')]
+    public function testWithHashRejectsInvalidHash(string $hash): void
+    {
+        $file = File::create('foobar.jpg', 123, 'image/jpeg', 'local');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must be a hexadecimal digest');
+
+        $file->withHash($hash);
     }
 }

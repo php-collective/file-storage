@@ -105,6 +105,20 @@ $file->metaData();
 $file->metaDataKey('foo');
 ```
 
+## Content hash
+
+A file can carry a hash of its content. The library does not compute it for you. The hash has to be a hexadecimal digest; `withHash()` rejects anything else and stores it in lower case.
+
+```php
+$file = $file->withHash(hash_file('sha256', './tests/Fixtures/titus.jpg'));
+
+$file->hash();
+```
+
+The default path builder stores a file with a hash under a [content addressed path](Path-Builders.md#content-addressed-paths).
+
+`hash()` and `withHash()` belong to `ContentHashInterface`, which the built-in `File` implements. A custom `FileInterface` implementation does not have to; check with `instanceof ContentHashInterface` before calling them on a file object you did not create.
+
 ## Extending functionality
 
 You can either extend the File object or implement your very own File object by implementing the [FileInterface](../src/FileInterface.php)
