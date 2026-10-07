@@ -22,6 +22,7 @@ use PhpCollective\Infrastructure\Storage\FileInterface;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
 use PhpCollective\Infrastructure\Storage\Utility\MimeType;
 use PhpCollective\Infrastructure\Storage\Utility\PathInfo;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
@@ -218,7 +219,7 @@ class FileTest extends TestCase
      *
      * @return void
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('invalidHashProvider')]
+    #[DataProvider('invalidHashProvider')]
     public function testWithHashRejectsInvalidHash(string $hash): void
     {
         $file = File::create('foobar.jpg', 123, 'image/jpeg', 'local');

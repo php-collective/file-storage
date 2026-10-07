@@ -241,7 +241,7 @@ class PathBuilderTest extends TestCase
      */
     public function testFileWithoutContentHashInterfaceIsUnhashed(): void
     {
-        $file = $this->createConfiguredMock(FileInterface::class, [
+        $file = $this->createConfiguredStub(FileInterface::class, [
             'uuid' => '914e1512-9153-4253-a81e-7ee2edc1d973',
             'filename' => 'titus.jpg',
             'extension' => 'jpg',
@@ -295,7 +295,7 @@ class PathBuilderTest extends TestCase
      */
     protected function foreignHashedFile(string $hash): FileInterface
     {
-        $file = $this->createMockForIntersectionOfInterfaces([FileInterface::class, ContentHashInterface::class]);
+        $file = $this->createStubForIntersectionOfInterfaces([FileInterface::class, ContentHashInterface::class]);
         $file->method('uuid')->willReturn('914e1512-9153-4253-a81e-7ee2edc1d973');
         $file->method('filename')->willReturn('titus.jpg');
         $file->method('extension')->willReturn('jpg');
