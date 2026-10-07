@@ -364,7 +364,7 @@ class PathBuilder implements PathBuilderInterface
 
     /**
      * The extension is taken from the uploaded filename, so only letters,
-     * digits and hyphens are let into the path. Lowercasing is separate, because it changes
+     * digits, hyphens and underscores are let into the path. Lowercasing is separate, because it changes
      * the path of files that were stored with an upper case extension.
      *
      * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
@@ -374,7 +374,7 @@ class PathBuilder implements PathBuilderInterface
      */
     protected function extension(FileInterface $file, bool $lowercase): string
     {
-        $extension = (string)preg_replace('/[^A-Za-z0-9-]/', '', (string)$file->extension());
+        $extension = (string)preg_replace('/[^A-Za-z0-9_-]/', '', (string)$file->extension());
 
         return $lowercase ? strtolower($extension) : $extension;
     }
