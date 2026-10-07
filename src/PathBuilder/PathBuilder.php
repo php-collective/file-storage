@@ -42,6 +42,7 @@ class PathBuilder implements PathBuilderInterface
         'sanitizeFilename' => true,
         'beautifyFilename' => false,
         'filenameSanitizer' => null,
+        'normalizeExtension' => true,
         'pathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{extension}',
         'variantPathTemplate' => '{model}{ds}{randomPath}{ds}{strippedId}{ds}{filename}.{hashedVariant}.{extension}',
         'hashPathTemplate' => 'blobs{ds}{hashPath}{ds}{hash}.{extension}',
@@ -306,7 +307,7 @@ class PathBuilder implements PathBuilderInterface
             ),
             '{modelId}' => $file->modelId(),
             '{strippedId}' => str_replace('-', '', $file->uuid()),
-            '{extension}' => $file->extension(),
+            '{extension}' => $this->extension($file, (bool)$config['normalizeExtension']),
             '{mimeType}' => $file->mimeType(),
             '{filename}' => $filename,
             '{hashedFilename}' => sha1($filename),
@@ -356,6 +357,25 @@ class PathBuilder implements PathBuilderInterface
 
         // One spelling per digest, or the same content gets two paths.
         return strtolower($hash);
+    }
+
+    /**
+     * The extension is taken from the uploaded filename. Normalized, `JPG` and
+     * `jpg` resolve to one path and nothing but letters and digits gets into it.
+     *
+     * @param \PhpCollective\Infrastructure\Storage\FileInterface $file
+     * @param bool $normalize
+     *
+     * @return string
+     */
+    protected function extension(FileInterface $file, bool $normalize): string
+    {
+        $extension = (string)$file->extension();
+        if (!$normalize) {
+            return $extension;
+        }
+
+        return (string)preg_replace('/[^a-z0-9]/', '', strtolower($extension));
     }
 
     /**

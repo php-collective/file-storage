@@ -21,6 +21,8 @@ $builder = new PathBuilder([
  * **sanitizeFilename**: true
  * **beautifyFilename**: false
  * **filenameSanitizer**: null|\PhpCollective\Infrastructure\Storage\Utility\FilenameSanitizerInterface
+ * **normalizeExtension**: true
+   * Lowercases `{extension}` and removes everything but letters and digits. See [Extension normalization](#extension-normalization).
  * **pathTemplate**: '{model}{ds}{randomPath}{ds}{id}'
  * **variantPathTemplate**: '{filename}.{variant}.{extension}'
  * **hashPathTemplate**: 'blobs{ds}{hashPath}{ds}{hash}.{extension}'
@@ -65,6 +67,20 @@ The following placeholders are only valid when used in a path for a manipulated 
 
  * **{variant}**: The name of the variant
  * **{hashedVariant}**: A hashed and to six chars truncated version of the manipulation name.
+
+### Extension normalization
+
+The extension comes from the name the file was uploaded under. By default the path builder lowercases it and removes every character that is not a letter or a digit, in all three templates. `photo.JPG` and `photo.jpg` then end in `.jpg`, and two files with the same content hash share one path whichever spelling they were uploaded with.
+
+`File::extension()` still returns the extension as uploaded. Only the path changes.
+
+Changed in 1.1: before, the extension went into the path as it was. Paths that are already stored are not affected, because they are read from where you persisted them. Paths that are built again for a file uploaded earlier are: a variant regenerated for `photo.JPG` is now written to a `.jpg` path next to the old `.JPG` variant. To keep the previous behavior:
+
+```php
+$builder = new PathBuilder([
+    'normalizeExtension' => false,
+]);
+```
 
 ### Content addressed paths
 

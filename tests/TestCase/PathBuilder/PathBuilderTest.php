@@ -18,12 +18,14 @@ use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
 use PhpCollective\Infrastructure\Storage\ContentHashInterface;
+use PhpCollective\Infrastructure\Storage\File;
 use PhpCollective\Infrastructure\Storage\FileFactory;
 use PhpCollective\Infrastructure\Storage\FileInterface;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
 use PhpCollective\Infrastructure\Storage\Processor\Image\ImageVariantCollection;
 use PhpCollective\Infrastructure\Storage\Utility\NoopFilenameSanitizer;
 use PhpCollective\Test\TestCase\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * PathBuilderTest
@@ -342,5 +344,64 @@ class PathBuilderTest extends TestCase
 
         $this->assertStringNotContainsString($hash, $builder->pathForVariant($file, '0'));
         $this->assertStringStartsWith('User/', $builder->pathForVariant($file, '0'));
+    }
+
+    /**
+     * @return array<string, array{string, bool, string}>
+     */
+    public static function extensionProvider(): array
+    {
+        return [
+            'upper case' => ['photo.JPG', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
+            'other characters' => ['photo.j p-g!', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
+            'nothing left' => ['photo.???', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo'],
+            'opted out' => ['photo.JPG', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.JPG'],
+        ];
+    }
+
+    /**
+     * @param string $filename
+     * @param bool $normalize
+     * @param string $expected
+     *
+     * @return void
+     */
+    #[DataProvider('extensionProvider')]
+    public function testExtensionNormalization(string $filename, bool $normalize, string $expected): void
+    {
+        $file = File::create($filename, 1, 'image/jpeg', 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->belongsToModel('User', '1');
+
+        $builder = new PathBuilder(['directorySeparator' => '/', 'normalizeExtension' => $normalize]);
+
+        $this->assertSame($expected, $builder->path($file));
+    }
+
+    /**
+     * @return void
+     */
+    public function testHashedFilesDifferingOnlyInExtensionCaseShareOnePath(): void
+    {
+        $hash = hash('sha256', 'content');
+        $builder = new PathBuilder(['directorySeparator' => '/']);
+        $upper = File::create('a.JPG', 1, 'image/jpeg', 'local')->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')->withHash($hash);
+        $lower = File::create('b.jpg', 1, 'image/jpeg', 'local')->withUuid('014e1512-9153-4253-a81e-7ee2edc1d973')->withHash($hash);
+
+        $this->assertSame($builder->path($lower), $builder->path($upper));
+    }
+
+    /**
+     * @return void
+     */
+    public function testVariantPathUsesNormalizedExtension(): void
+    {
+        $file = File::create('photo.JPG', 1, 'image/jpeg', 'local')
+            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
+            ->belongsToModel('User', '1');
+
+        $builder = new PathBuilder(['directorySeparator' => '/']);
+
+        $this->assertStringEndsWith('.jpg', $builder->pathForVariant($file, 'thumb'));
     }
 }
