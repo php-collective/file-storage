@@ -14,6 +14,7 @@
 
 namespace PhpCollective\Test\TestCase;
 
+use InvalidArgumentException;
 use PhpCollective\Infrastructure\Storage\Exception\MissingUuidException;
 use PhpCollective\Infrastructure\Storage\File;
 use PhpCollective\Infrastructure\Storage\FileFactory;
@@ -186,5 +187,45 @@ class FileTest extends TestCase
         $this->assertNull($file->toArray()['hash']);
         $this->assertSame('abc123', $hashed->hash());
         $this->assertSame('abc123', $hashed->toArray()['hash']);
+    }
+
+    /**
+     * @return void
+     */
+    public function testWithHashStoresLowerCase(): void
+    {
+        $file = File::create('foobar.jpg', 123, 'image/jpeg', 'local')->withHash('ABCDEF12');
+
+        $this->assertSame('abcdef12', $file->hash());
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function invalidHashProvider(): array
+    {
+        return [
+            'empty' => [''],
+            'dot segments' => ['../outside'],
+            'separator' => ['ab/cd'],
+            'not hexadecimal' => ['xyz'],
+            'trailing newline' => ["abc\n"],
+        ];
+    }
+
+    /**
+     * @param string $hash
+     *
+     * @return void
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidHashProvider')]
+    public function testWithHashRejectsInvalidHash(string $hash): void
+    {
+        $file = File::create('foobar.jpg', 123, 'image/jpeg', 'local');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('must be a hexadecimal digest');
+
+        $file->withHash($hash);
     }
 }

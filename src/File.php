@@ -14,6 +14,7 @@
 
 namespace PhpCollective\Infrastructure\Storage;
 
+use InvalidArgumentException;
 use PhpCollective\Infrastructure\Storage\Exception\InvalidStreamResourceException;
 use PhpCollective\Infrastructure\Storage\Exception\MissingUuidException;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilderInterface;
@@ -691,14 +692,20 @@ class File implements FileInterface, ContentHashInterface
      * A file with a content hash is stored under the path builder's hash
      * template instead of its uuid based one.
      *
-     * @param string $hash Content hash
+     * @param string $hash Hexadecimal digest of the content, stored in lower case
+     *
+     * @throws \InvalidArgumentException
      *
      * @return static
      */
     public function withHash(string $hash): static
     {
+        if (preg_match('/^[a-f0-9]+$/iD', $hash) !== 1) {
+            throw new InvalidArgumentException('The content hash must be a hexadecimal digest.');
+        }
+
         $that = clone $this;
-        $that->hash = $hash;
+        $that->hash = strtolower($hash);
 
         return $that;
     }

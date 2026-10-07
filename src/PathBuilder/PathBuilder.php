@@ -346,12 +346,16 @@ class PathBuilder implements PathBuilderInterface
         }
 
         $hash = (string)$file->hash();
+        if ($hash === '') {
+            return '';
+        }
         // The hash ends up in the path, so it must not carry separators or dot segments.
-        if ($hash !== '' && !ctype_xdigit($hash)) {
+        if (preg_match('/^[a-f0-9]+$/iD', $hash) !== 1) {
             throw new InvalidArgumentException('The content hash must be a hexadecimal digest.');
         }
 
-        return $hash;
+        // One spelling per digest, or the same content gets two paths.
+        return strtolower($hash);
     }
 
     /**

@@ -17,6 +17,7 @@ namespace PhpCollective\Test\TestCase\PathBuilder;
 use DateTime;
 use DateTimeInterface;
 use InvalidArgumentException;
+use PhpCollective\Infrastructure\Storage\ContentHashInterface;
 use PhpCollective\Infrastructure\Storage\FileFactory;
 use PhpCollective\Infrastructure\Storage\FileInterface;
 use PhpCollective\Infrastructure\Storage\PathBuilder\PathBuilder;
@@ -288,18 +289,42 @@ class PathBuilderTest extends TestCase
     }
 
     /**
+     * @param string $hash
+     *
+     * @return \PhpCollective\Infrastructure\Storage\FileInterface&\PhpCollective\Infrastructure\Storage\ContentHashInterface
+     */
+    protected function foreignHashedFile(string $hash): FileInterface
+    {
+        $file = $this->createMockForIntersectionOfInterfaces([FileInterface::class, ContentHashInterface::class]);
+        $file->method('uuid')->willReturn('914e1512-9153-4253-a81e-7ee2edc1d973');
+        $file->method('filename')->willReturn('titus.jpg');
+        $file->method('extension')->willReturn('jpg');
+        $file->method('hash')->willReturn($hash);
+
+        return $file;
+    }
+
+    /**
+     * A foreign file object does not go through File::withHash().
+     *
      * @return void
      */
-    public function testNonHexadecimalHashIsRejected(): void
+    public function testNonHexadecimalHashOfForeignFileIsRejected(): void
     {
-        $file = FileFactory::fromDisk($this->getFixtureFile('titus.jpg'), 'local')
-            ->withUuid('914e1512-9153-4253-a81e-7ee2edc1d973')
-            ->withHash('../outside');
-
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('must be a hexadecimal digest');
 
-        (new PathBuilder())->path($file);
+        (new PathBuilder())->path($this->foreignHashedFile('../outside'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testHashOfForeignFileIsLowercasedInPath(): void
+    {
+        $builder = new PathBuilder(['directorySeparator' => '/']);
+
+        $this->assertSame('blobs/ab/cd/ef/abcdef12.jpg', $builder->path($this->foreignHashedFile('ABCDEF12')));
     }
 
     /**

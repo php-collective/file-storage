@@ -21,7 +21,7 @@ interface ContentHashInterface
     public function hash(): ?string;
 
     /**
-     * @param string $hash Content hash
+     * @param string $hash Hexadecimal digest of the content
      *
      * @return static
      */

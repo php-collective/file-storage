@@ -107,7 +107,7 @@ $file->metaDataKey('foo');
 
 ## Content hash
 
-A file can carry a hash of its content. The library does not compute it for you.
+A file can carry a hash of its content. The library does not compute it for you. The hash has to be a hexadecimal digest; `withHash()` rejects anything else and stores it in lower case.
 
 ```php
 $file = $file->withHash(hash_file('sha256', './tests/Fixtures/titus.jpg'));
