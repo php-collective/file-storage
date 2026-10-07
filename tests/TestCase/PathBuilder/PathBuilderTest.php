@@ -354,8 +354,10 @@ class PathBuilderTest extends TestCase
         return [
             'case kept by default' => ['photo.JPG', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.JPG'],
             'lowercased on request' => ['photo.JPG', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
-            'other characters always removed' => ['photo.J p-G!', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.JpG'],
-            'other characters removed and lowercased' => ['photo.J p-G!', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
+            'other characters always removed' => ['photo.J p+G!', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.JpG'],
+            'other characters removed and lowercased' => ['photo.J p+G!', true, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo.jpg'],
+            'hyphen kept' => ['archive.tar-GZ', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/archive.tar-GZ'],
+            'underscore kept' => ['dump.sql_bak', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/dump.sql_bak'],
             'nothing left' => ['photo.???', false, 'User/fe/c3/b4/914e151291534253a81e7ee2edc1d973/photo'],
         ];
     }

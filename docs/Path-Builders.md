@@ -72,7 +72,7 @@ The following placeholders are only valid when used in a path for a manipulated 
 
 The extension comes from the name the file was uploaded under. Two things happen to it on the way into a path.
 
-Characters other than letters and digits are always removed. `report.pd f!` ends in `.pdf`, and an extension made up of other characters only is dropped.
+Characters other than letters, digits, hyphens and underscores are always removed. `report.pd f!` ends in `.pdf`, and an extension made up of other characters only is dropped.
 
 Case depends on the template:
 
@@ -89,7 +89,7 @@ $builder = new PathBuilder([
 
 Switching `lowercaseExtension` on affects files stored before: their stored paths keep working, but a path that is built again, a regenerated variant of `photo.JPG` for example, is then written to a `.jpg` path next to the old `.JPG` one.
 
-Changed in 1.1: characters other than letters and digits used to go into the path as they were. A file stored earlier under such an extension keeps its stored path; a path built again for it no longer contains those characters.
+Changed in 1.1: characters other than letters, digits, hyphens and underscores used to go into the path as they were. A file stored earlier under such an extension keeps its stored path; a path built again for it no longer contains those characters.
 
 ### Content addressed paths
 
